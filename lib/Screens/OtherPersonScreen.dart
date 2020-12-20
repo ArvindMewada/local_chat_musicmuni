@@ -481,7 +481,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 16),
               child: Text(
-                "${otherPersonDataModel.time.substring(2, 7)}",
+                "${otherPersonDataModel.time}",
                 style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.normal,
@@ -600,7 +600,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            "${otherPersonDataModel.durationOfRecord}",
+            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
             style: TextStyle(color: Colors.white, fontSize: 10),
           ),
           Container(
