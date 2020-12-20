@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -62,7 +62,7 @@ class DatabaseHelperOtherPerson {
 
   // only row insert
   Future<int> newRowInsertExistingTableInOtherPerson(
-      OtherPersonDataModel otherPersonDataModel) async {
+      DataModelAll otherPersonDataModel) async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
     var result = await dbClient
         .rawInsert('INSERT INTO $tableNameOtherPerson (${Keys.idOtherPeron}'
@@ -86,8 +86,8 @@ class DatabaseHelperOtherPerson {
   Future<List> getAllMessageOtherPerson() async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
     var res = await dbClient.query("$tableNameOtherPerson");
-    List<OtherPersonDataModel> list = res.isNotEmpty
-        ? res.map((c) => OtherPersonDataModel.fromMap(c)).toList()
+    List<DataModelAll> list = res.isNotEmpty
+        ? res.map((c) => DataModelAll.fromMap(c)).toList()
         : [];
     //   var result = await dbClient.rawQuery('SELECT * FROM table');
     return list;

@@ -1,5 +1,5 @@
 import 'package:bubble/bubble.dart';
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'MySelfWidget.dart';
 import 'UtilsWidgets.dart';
 
-Widget dateConvertMicroToDisplay({BuildContext context, OtherPersonDataModel otherPersonDataModel}) {
+Widget dateConvertMicroToDisplay({BuildContext context, DataModelAll otherPersonDataModel}) {
   if (otherPersonDataModel != null &&
       otherPersonDataModel.isMySelf != null &&
       otherPersonDataModel.isMySelf.toString().length > 2) {
@@ -27,7 +27,7 @@ Widget dateConvertMicroToDisplay({BuildContext context, OtherPersonDataModel oth
 }
 
 
-Widget sentWidgetTextField({BuildContext context, OtherPersonDataModel otherPersonDataModel}){
+Widget sentWidgetTextField({BuildContext context, DataModelAll otherPersonDataModel}){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -60,7 +60,7 @@ Widget sentWidgetTextField({BuildContext context, OtherPersonDataModel otherPers
   );
 }
 
-Widget sendAudioFileWidget({BuildContext context, OtherPersonDataModel otherPersonDataModel}){
+Widget sendAudioFileWidget({BuildContext context, DataModelAll otherPersonDataModel}){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -88,7 +88,7 @@ Widget sendAudioFileWidget({BuildContext context, OtherPersonDataModel otherPers
 }
 
 Widget audioRecordWidgetsReceive(
-    BuildContext context, OtherPersonDataModel otherPersonDataModel) {
+    BuildContext context, DataModelAll otherPersonDataModel) {
   return Container(
     width: 150,
     child: Row(
@@ -121,7 +121,7 @@ Widget audioRecordWidgetsReceive(
 }
 
 
-Widget receiveTextWidget({BuildContext context, OtherPersonDataModel otherPersonDataModel}){
+Widget receiveTextWidget({BuildContext context, DataModelAll otherPersonDataModel}){
   return Container(
     margin: EdgeInsets.only(top: 16),
     child: Column(
@@ -157,7 +157,7 @@ Widget receiveTextWidget({BuildContext context, OtherPersonDataModel otherPerson
   );
 }
 
-Widget receiveAudioWidget({BuildContext context, OtherPersonDataModel otherPersonDataModel}){
+Widget receiveAudioWidget({BuildContext context, DataModelAll otherPersonDataModel}){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.end,
     mainAxisAlignment: MainAxisAlignment.end,

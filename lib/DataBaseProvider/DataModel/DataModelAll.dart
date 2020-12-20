@@ -1,14 +1,14 @@
 import '../Keys/Keys.dart';
 
-class OtherPersonDataModel {
+class DataModelAll {
   int id; // for unique id
   String data; // data -> text message or audio
   String time;
   String isTypeText; // default text or change to audio
-  String durationOfRecord;
-  String isMySelf;
+  String durationOfRecord; // duration if record audio
+  String isMySelf; // check sent or received type
 
-  OtherPersonDataModel({
+  DataModelAll({
     this.id,
     this.durationOfRecord,
     this.isTypeText,
@@ -17,7 +17,7 @@ class OtherPersonDataModel {
     this.isMySelf
   });
 
-  factory OtherPersonDataModel.fromMap(Map<String, dynamic> json) => new OtherPersonDataModel(
+  factory DataModelAll.fromMap(Map<String, dynamic> json) => new DataModelAll(
     id: json[Keys.idOtherPeron],
     data: json[Keys.dataOtherPerson],
     durationOfRecord: json[Keys.durationOtherPerson],

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
@@ -32,9 +32,9 @@ class _MySelfScreenState extends State<MySelfScreen> {
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   final mySelfController = TextEditingController();
   int countMy = 0;
-  List<OtherPersonDataModel> fetchList = List();
+  List<DataModelAll> fetchList = List();
   bool isSendShow = false, isListShow = false, isReceivedList = false;
-  List<OtherPersonDataModel> otherDataList = List();
+  List<DataModelAll> otherDataList = List();
   FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
@@ -264,7 +264,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   void _insertOtherPersonLocalSaved(
       {String dataFileSaveInLocal, String durationRecordTime}) async {
     // row to insert
-    OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
+    DataModelAll otherPersonDataModel = DataModelAll();
     dataModelSavedLocal(durationRecordTime: durationRecordTime,
         dataFileSaveInLocal: dataFileSaveInLocal, otherPersonDataModel: otherPersonDataModel);
     setState(() {
@@ -285,7 +285,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   }
 
   void dataModelSavedLocal({String dataFileSaveInLocal, String durationRecordTime,
-    OtherPersonDataModel otherPersonDataModel}){
+    DataModelAll otherPersonDataModel}){
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
     if (durationRecordTime != null &&
         durationRecordTime.toString().length > 0) {
@@ -306,7 +306,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   }
 
   void getAllMessageFetch(BuildContext context) async {
-    List<OtherPersonDataModel> fetchListTemp =
+    List<DataModelAll> fetchListTemp =
         await dbHelperOtherPerson.getAllMessageOtherPerson();
     if (fetchListTemp != null && fetchListTemp.length > 0) {
       setState(() {

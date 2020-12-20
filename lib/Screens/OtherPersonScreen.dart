@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
 import 'package:chat_app_musicmuni_sample/Widgets/OtherScreenWidget.dart';
@@ -31,9 +31,9 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   final mySelfController = TextEditingController();
   int countOther = 0;
-  List<OtherPersonDataModel> fetchList = List();
+  List<DataModelAll> fetchList = List();
   bool isSendShow = false, isListShow = false, isReceivedList = false;
-  List<OtherPersonDataModel> otherDataList = List();
+  List<DataModelAll> otherDataList = List();
   FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
@@ -260,7 +260,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   }
 
   void getAllMessageFetch(BuildContext context) async {
-    List<OtherPersonDataModel> fetchListTemp =
+    List<DataModelAll> fetchListTemp =
         await dbHelperOtherPerson.getAllMessageOtherPerson();
     if (fetchListTemp != null && fetchListTemp.length > 0) {
       setState(() {
@@ -272,7 +272,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   }
 
   Widget audioRecordWidgets(
-      BuildContext context, OtherPersonDataModel otherPersonDataModel) {
+      BuildContext context, DataModelAll otherPersonDataModel) {
     return Container(
       width: 150,
       child: Row(
@@ -397,7 +397,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   void _insertOtherPersonLocalSaved(
       {String dataFileSaveInLocal, String durationRecordTime}) async {
     // row to insert
-    OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
+    DataModelAll otherPersonDataModel = DataModelAll();
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
     if (durationRecordTime != null &&
         durationRecordTime.toString().length > 0) {
