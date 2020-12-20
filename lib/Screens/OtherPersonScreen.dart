@@ -1,9 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:chat_app_musicmuni_sample/db/MyselfDataModel.dart';
-import 'package:chat_app_musicmuni_sample/db/DataBaseHelperOtherPerson.dart';
-import 'package:chat_app_musicmuni_sample/db/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataBaseHelperOtherPerson.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/OtherPersonDataModel.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class OtherPersonScreen extends StatefulWidget {
 

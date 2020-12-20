@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'Utils/Util.dart';
+import 'DataBaseProvider/DataBaseHelperOtherPerson.dart';
 import 'Widgets/UtilsWidgets.dart';
-import 'db/DataBaseHelperOtherPerson.dart';
 
 class Home extends StatefulWidget {
   static int countOtherMessage = 0;
@@ -19,7 +17,6 @@ class _HomeState extends State<Home> {
   // Create a teoller and use it to retrieve the current value
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
   final dbHelperMySelf = DatabaseHelperOtherPerson.instanceOtherPeron;
-
   @override
   void initState() {
     // TODO: implement initState
