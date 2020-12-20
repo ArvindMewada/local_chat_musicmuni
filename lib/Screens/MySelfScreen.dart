@@ -92,7 +92,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
                       flex: 8,
                       child: Container(
                         margin: EdgeInsets.only(right: 16),
-                        padding: EdgeInsets.only(left: 30),
+                        padding: EdgeInsets.only(left: 30, right: 20),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
@@ -101,7 +101,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
                           showCursor: false,
                           keyboardType: TextInputType.multiline,
                           minLines: 1,
-                          maxLines: 10,
+                          maxLines: 50,
                           controller: mySelfController,
                           decoration: new InputDecoration(
                               filled: false,
@@ -340,7 +340,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   _stop() async {
     var result = await _recorder.stop();
-    print("Durauiot time : ${result.duration.toString()},");
     _insertOtherPersonLocalSaved(dataFileSaveInLocal: result.path,  durationRecordTime: result.duration.toString());
     setState(() {
       _current = result;
@@ -386,7 +385,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
       otherPersonMessageList.add(otherPersonDataModel);
     });
 
-    scrollController.animateTo(
+    if (scrollController.hasClients)
+      scrollController.animateTo(
       0.0,
       curve: Curves.fastOutSlowIn,
       duration: const Duration(milliseconds: 300),
@@ -401,25 +401,28 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   dateConvertMicroToDisplay(otherPersonDataModel) {
     if(otherPersonDataModel != null && otherPersonDataModel.isTypeText ){
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Bubble(
-            padding: BubbleEdges.all(8),
-            alignment: Alignment.topRight,
-            nip: BubbleNip.rightBottom,
-            elevation: 8,
-            color: Colors.blue[300],
-            child:
-            Text("${otherPersonDataModel.data}",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top:8.0, bottom: 16),
-            child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
-          ),
-        ],
+      return Container(
+        margin: EdgeInsets.only(top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Bubble(
+              padding: BubbleEdges.all(8),
+              alignment: Alignment.topRight,
+              nip: BubbleNip.rightBottom,
+              elevation: 8,
+              color: Colors.blue[300],
+              child:
+              Text("${otherPersonDataModel.data}",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top:8.0, bottom: 16),
+              child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
+            ),
+          ],
+        ),
       );
     }else{
       return Column(
