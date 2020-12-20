@@ -4,6 +4,7 @@ class Keys{
  
   static final String idOtherPeron = "id_other_person";
   static final String dataOtherPerson = "data_other_person";
+  static final String durationOtherPerson = "duration_other_person";
   static final String timeOtherPerson = "time_other_person";
 
 

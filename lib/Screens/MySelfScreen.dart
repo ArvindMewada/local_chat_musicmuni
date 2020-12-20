@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bubble/bubble.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/OtherPersonDataModel.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
@@ -116,7 +117,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
                       flex: 2,
                       child: GestureDetector(
                         onTap: () {
-                          HapticFeedback.vibrate();
+                          HapticFeedback.lightImpact();
                           if (isSendShow) {
                             // todo insert text file
                             _insertOtherPersonLocalSaved(
@@ -152,27 +153,17 @@ class _MySelfScreenState extends State<MySelfScreen> {
   }
   Widget sentMessageListBuild({BuildContext context}){
     if(isListShow != null && isListShow){
-      return Flexible(
-        child: ListView.builder(
-
-          scrollDirection: Axis.vertical,
-          controller: scrollController,
-          shrinkWrap: true,
-          itemCount: otherPersonMessageList.length,
-          itemBuilder: (context, i) {
-            return ListTile(
-              title: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: (){
-
-                },
-                child: dateConvertMicroToDisplay(otherPersonMessageList[i]),
-              ),
-            );
-          },
-        ),
+      return ListView.builder(
+        scrollDirection: Axis.vertical,
+        controller: scrollController,
+        shrinkWrap: true,
+        itemCount: otherPersonMessageList.length,
+        itemBuilder: (context, i) {
+          return ListTile(
+            title: dateConvertMicroToDisplay(otherPersonMessageList[i]),
+          );
+        },
       );
-
     }else{
       return Container();
     }
@@ -199,6 +190,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   if (_currentStatus == RecordingStatus.Recording) {
                     _init();
                     setState(() {
@@ -231,6 +223,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
                 child: GestureDetector(
                     onTap: () {
                       // todo stop audio and saved local
+                      HapticFeedback.lightImpact();
                       if (_currentStatus == RecordingStatus.Recording) {
                         _stop();
                         setState(() {
@@ -347,16 +340,17 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   _stop() async {
     var result = await _recorder.stop();
-    _insertOtherPersonLocalSaved(dataFileSaveInLocal: result.path);
+    print("Durauiot time : ${result.duration.toString()},");
+    _insertOtherPersonLocalSaved(dataFileSaveInLocal: result.path,  durationRecordTime: result.duration.toString());
     setState(() {
       _current = result;
       _currentStatus = _current.status;
     });
   }
 
-  void onPlayAudio() async {
+  void onPlayAudio(String recordPath) async {
     AudioPlayer audioPlayer = AudioPlayer();
-    await audioPlayer.play(_current.path, isLocal: true);
+    await audioPlayer.play(recordPath, isLocal: true);
   }
 
   void getCountOtherMessage(BuildContext context) async {
@@ -368,13 +362,17 @@ class _MySelfScreenState extends State<MySelfScreen> {
       }
   }
 
-  void _insertOtherPersonLocalSaved({String dataFileSaveInLocal}) async {
+  void _insertOtherPersonLocalSaved({String dataFileSaveInLocal, String durationRecordTime}) async {
     // row to insert
     OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
+    otherPersonDataModel.durationOfRecord =  durationRecordTime;
+
     if (isSendShow) {
+      otherPersonDataModel.isTypeText = true;
       otherPersonDataModel.data = dataFileSaveInLocal.toString();
     } else {
+      otherPersonDataModel.isTypeText = false;
       otherPersonDataModel.data = dataFileSaveInLocal.toString();
     }
 
@@ -401,17 +399,74 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
 
 
-  dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
+  dateConvertMicroToDisplay(otherPersonDataModel) {
+    if(otherPersonDataModel != null && otherPersonDataModel.isTypeText ){
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Bubble(
+            padding: BubbleEdges.all(8),
+            alignment: Alignment.topRight,
+            nip: BubbleNip.rightBottom,
+            elevation: 8,
+            color: Colors.blue[300],
+            child:
+            Text("${otherPersonDataModel.data}",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top:8.0, bottom: 16),
+            child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
+          ),
+        ],
+      );
+    }else{
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Bubble(
+            padding: BubbleEdges.all(8),
+            alignment: Alignment.topRight,
+            nip: BubbleNip.rightBottom,
+            elevation: 8,
+            color: Colors.blue[300],
+            child: audioRecordWidgets(context, otherPersonDataModel)
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top:8.0, bottom: 16),
+            child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
+          ),
+        ],
+      );
+    }
 
-    return Container(
-        width: MediaQuery.of(context).size.width / 2,
-        height: 50,
-        color: Colors.blue,
-        child: Column(
-          children: <Widget>[
-            Text("${otherPersonDataModel.data}", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),),
-            Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey),),
-          ],
-        ));
   }
+
+  Widget audioRecordWidgets(BuildContext context, OtherPersonDataModel otherPersonDataModel){
+  return Container(
+      width: 150,
+      child:  Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: (){
+                HapticFeedback.lightImpact();
+                onPlayAudio(otherPersonDataModel.data);
+              },
+              child: Icon(Icons.play_arrow, color: Colors.white, size: 25,)),
+          Container(
+            color: Colors.white,
+            height: 1,
+            width: 50,
+          ),
+          Text("${otherPersonDataModel.durationOfRecord.substring(2,7)}", style: TextStyle(color: Colors.white, fontSize: 10),),
+        ],
+      ),
+  ) ;
+  }
+
 }

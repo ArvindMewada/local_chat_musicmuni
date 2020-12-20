@@ -4,6 +4,7 @@ import 'package:chat_app_musicmuni_sample/DataBaseProvider/OtherPersonDataModel.
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+
 import 'Keys.dart';
 
 class DatabaseHelperOtherPerson {
@@ -15,8 +16,7 @@ class DatabaseHelperOtherPerson {
 
   final String databaseNameOtherPerson = "OtherPersonDatabaseDB.db";
   final String tableNameOtherPerson = "other_person_table";
-  final int  databaseVersionOtherPerson = 1;
-
+  final int databaseVersionOtherPerson = 1;
 
   // only have a single app-wide reference to the database
   static Database _databaseOther;
@@ -32,11 +32,10 @@ class DatabaseHelperOtherPerson {
   _initDatabaseOtherPerson() async {
     Directory documentsDirectoryOtherPerson =
         await getApplicationDocumentsDirectory();
-    String pathOtherPerson = join(documentsDirectoryOtherPerson.path,
-        databaseNameOtherPerson);
+    String pathOtherPerson =
+        join(documentsDirectoryOtherPerson.path, databaseNameOtherPerson);
     return await openDatabase(pathOtherPerson,
-        version: databaseVersionOtherPerson,
-        onCreate: _onCreateOtherPerson);
+        version: databaseVersionOtherPerson, onCreate: _onCreateOtherPerson);
   }
 
   // SQL code to create the database table
@@ -45,6 +44,7 @@ class DatabaseHelperOtherPerson {
           CREATE TABLE $tableNameOtherPerson (
            ${Keys.idOtherPeron} INTEGER PRIMARY KEY,
             ${Keys.dataOtherPerson} TEXT NOT NULL,
+            ${Keys.durationOtherPerson} TEXT NOT NULL,
             ${Keys.timeOtherPerson} TEXT NOT NULL 
           )
           ''');
@@ -61,19 +61,21 @@ class DatabaseHelperOtherPerson {
   Future<int> newRowInsertExistingTableInOtherPerson(
       OtherPersonDataModel otherPersonDataModel) async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
-    var result = await dbClient.rawInsert(
-        'INSERT INTO $tableNameOtherPerson (${Keys.idOtherPeron}'
-        ', $databaseNameOtherPerson,${Keys.timeOtherPerson} )'
-        ' VALUES (\'${otherPersonDataModel.id}\', '
-        '\'${otherPersonDataModel.data}'
-        ', \'${otherPersonDataModel.time}\')');
+    var result = await dbClient
+        .rawInsert('INSERT INTO $tableNameOtherPerson (${Keys.idOtherPeron}'
+            ', $databaseNameOtherPerson,${Keys.timeOtherPerson},${Keys.durationOtherPerson} )'
+            ' VALUES (\'${otherPersonDataModel.id}\', '
+            '\'${otherPersonDataModel.data}'
+            '\'${otherPersonDataModel.durationOfRecord}'
+            ', \'${otherPersonDataModel.time}\')');
     return result;
   }
 
   // number of message count other person
   Future<int> getCountOtherMessage() async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
-    int count = Sqflite.firstIntValue(await dbClient.rawQuery('SELECT COUNT(*) FROM $tableNameOtherPerson'));
+    int count = Sqflite.firstIntValue(
+        await dbClient.rawQuery('SELECT COUNT(*) FROM $tableNameOtherPerson'));
     return count;
   }
 
@@ -91,8 +93,7 @@ class DatabaseHelperOtherPerson {
   // single chat fetch
   Future<List> getSingleRowFetchOtherPerson() async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
-    var result =
-        await dbClient.rawQuery('SELECT * FROM $tableNameOtherPerson');
+    var result = await dbClient.rawQuery('SELECT * FROM $tableNameOtherPerson');
     return result.toList();
   }
 }
