@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:bubble/bubble.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
+import 'package:chat_app_musicmuni_sample/Widgets/OtherScreenWidget.dart';
 import 'package:chat_app_musicmuni_sample/Widgets/UtilsWidgets.dart';
-import 'package:chat_app_musicmuni_sample/Widgets/HomeScreenWidget.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,15 +32,14 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   final mySelfController = TextEditingController();
   int countOther = 0;
   List<OtherPersonDataModel> fetchList = List();
-  bool isSendShow = false,
-      isListShow = false,
-      isReceivedList = false;
+  bool isSendShow = false, isListShow = false, isReceivedList = false;
   List<OtherPersonDataModel> otherDataList = List();
   FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
   GlobalKey itemKey;
   ScrollController scrollController;
+  bool fullWidthAudioRecord = false;
 
   @override
   initState() {
@@ -57,17 +54,16 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     });
   }
 
-  void countAllClear(BuildContext context){
+  void countAllClear(BuildContext context) {
     setState(() {
       MySelfScreen.countMyMessage = 0;
       OtherPersonScreen.countOtherMessage = 0;
     });
   }
+
   void controlOfInputTextField() {
     if (mySelfController.text != null &&
-        mySelfController.text
-            .toString()
-            .length > 0) {
+        mySelfController.text.toString().length > 0) {
       setState(() {
         isSendShow = true;
       });
@@ -86,8 +82,6 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     super.dispose();
   }
 
-  bool fullWidthAudioRecord = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,44 +92,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
       ),
       bottomNavigationBar: fullWidthAudioRecord
           ? audioRecordOpen()
-          : Container(
-        margin: EdgeInsets.only(bottom: 20, left: 16, top: 8),
-        child: Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              inputFiledBothSideChat(context, mySelfController),
-              Expanded(
-                flex: 2,
-                child: GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    if (isSendShow) {
-                      // todo insert text file
-                      _insertOtherPersonLocalSaved(
-                          dataFileSaveInLocal: mySelfController.text);
-                    } else {
-                      // todo insert audio file
-                      setState(() {
-                        fullWidthAudioRecord = true;
-                      });
-                      permissionCheckAudioAndStorage();
-                    }
-                  },
-                  behavior: HitTestBehavior.translucent,
-                  child:iconsSendAndRecordWidget(context: context, isSendShow: isSendShow),
-              ),
-              ),
-            ],
-          ),
-        ),
-      ),
+          : bottomNavTextInoutFieldWidget(context),
       body: SafeArea(
         child: SingleChildScrollView(
           reverse: true,
@@ -145,32 +102,74 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     );
   }
 
+  Widget bottomNavTextInoutFieldWidget(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20, left: 16, top: 8),
+      child: Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            inputFiledBothSideChat(context, mySelfController),
+            sendIconsAndRecord(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget sendIconsAndRecord(BuildContext context) {
+    return Expanded(
+      flex: 2,
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          if (isSendShow) {
+            // todo insert text file
+            _insertOtherPersonLocalSaved(
+                dataFileSaveInLocal: mySelfController.text);
+          } else {
+            // todo insert audio file
+            setState(() {
+              fullWidthAudioRecord = true;
+            });
+            permissionCheckAudioAndStorage();
+          }
+        },
+        behavior: HitTestBehavior.translucent,
+        child:
+            iconsSendAndRecordWidget(context: context, isSendShow: isSendShow),
+      ),
+    );
+  }
+
   Widget sentMessageListBuild({BuildContext context}) {
     return Column(
       children: <Widget>[
-        fetchList != null ? ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: fetchList.length,
-          itemBuilder: (context, i) {
-            return ListTile(
-              title: dateConvertMicroToDisplay(fetchList[i]),
-            );
-          },
-        ) : Container(),
-        otherDataList != null ? ListView.builder(
-          scrollDirection: Axis.vertical,
-          controller: scrollController,
-          shrinkWrap: true,
-          itemCount: otherDataList.length,
-          itemBuilder: (context, i) {
-            return ListTile(
-              title: dateConvertMicroToDisplay(otherDataList[i]),
-            );
-          },
-        ) : Container(),
+        fetchList != null
+            ? listBuilderReceiveAndSent(context, fetchList)
+            : Container(),
+        otherDataList != null
+            ? listBuilderReceiveAndSent(context, otherDataList)
+            : Container(),
       ],
+    );
+  }
+
+  Widget listBuilderReceiveAndSent(BuildContext context, otherDataList) {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      controller: scrollController,
+      shrinkWrap: true,
+      itemCount: otherDataList.length,
+      itemBuilder: (context, i) {
+        return ListTile(
+          title: dateConvertMicroToDisplay(
+              context: context, otherPersonDataModel: otherDataList[i]),
+        );
+      },
     );
   }
 
@@ -191,66 +190,126 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  if (_currentStatus == RecordingStatus.Recording) {
-                    _init();
-                    setState(() {
-                      fullWidthAudioRecord = false;
-                    });
-                  }
-                },
-                child: Center(
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(fontSize: 12, color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Center(
-                child: Text(
-                  "${_current?.duration?.inSeconds.toString()}",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Expanded(
-                flex: 1,
-                child: GestureDetector(
-                    onTap: () {
-                      // todo stop audio and saved local
-                      HapticFeedback.lightImpact();
-                      if (_currentStatus == RecordingStatus.Recording) {
-                        _stop();
-                        setState(() {
-                          fullWidthAudioRecord = false;
-                        });
-                      }
-                    },
-                    behavior: HitTestBehavior.translucent,
-                    child: Center(
-                        child: Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 25,
-                        )))),
+            cancelRecordWidget(context),
+            recordTimeWidget(context),
+            recordSavedLocal(context),
           ],
         ),
       ),
     );
   }
 
+  Widget cancelRecordWidget(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          if (_currentStatus == RecordingStatus.Recording) {
+            _init();
+            setState(() {
+              fullWidthAudioRecord = false;
+            });
+          }
+        },
+        child: Center(
+          child: Text(
+            "Cancel",
+            style: TextStyle(fontSize: 12, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget recordTimeWidget(BuildContext context) {
+    return Expanded(
+      flex: 5,
+      child: Center(
+        child: Text(
+          "${_current?.duration?.inSeconds.toString()}",
+          style: TextStyle(
+              fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget recordSavedLocal(BuildContext context) {
+    return Expanded(
+        flex: 1,
+        child: GestureDetector(
+            onTap: () {
+              // todo stop audio and saved local
+              HapticFeedback.lightImpact();
+              if (_currentStatus == RecordingStatus.Recording) {
+                _stop();
+                setState(() {
+                  fullWidthAudioRecord = false;
+                });
+              }
+            },
+            behavior: HitTestBehavior.translucent,
+            child: Center(
+                child: Icon(
+              Icons.send,
+              color: Colors.white,
+              size: 25,
+            ))));
+  }
+
+  void getAllMessageFetch(BuildContext context) async {
+    List<OtherPersonDataModel> fetchListTemp =
+        await dbHelperOtherPerson.getAllMessageOtherPerson();
+    if (fetchListTemp != null && fetchListTemp.length > 0) {
+      setState(() {
+        fetchList.clear();
+        fetchList.addAll(fetchListTemp);
+        isReceivedList = true;
+      });
+    }
+  }
+
+  Widget audioRecordWidgets(
+      BuildContext context, OtherPersonDataModel otherPersonDataModel) {
+    return Container(
+      width: 150,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                HapticFeedback.lightImpact();
+                onPlayAudio(otherPersonDataModel.data);
+              },
+              child: Icon(
+                Icons.play_circle_outline,
+                color: Colors.white,
+                size: 25,
+              )),
+          Container(
+            color: Colors.white,
+            height: 1,
+            width: 50,
+          ),
+          Text(
+            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
+            style: TextStyle(color: Colors.white, fontSize: 10),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void getCountOtherMessage(BuildContext context) {
+    setState(() {
+      MySelfScreen.countMyMessage = countOther;
+      OtherPersonScreen.countOtherMessage = 0;
+    });
+  }
 
   void permissionCheckAudioAndStorage() async {
     bool isRequestPermission = await requestPermissionForStorageAndMicrophone();
@@ -273,10 +332,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
         // can add extension like ".mp4" ".wav" ".m4a" ".aac"
         customPath = appDocDirectory.path +
             customPath +
-            DateTime
-                .now()
-                .millisecondsSinceEpoch
-                .toString();
+            DateTime.now().millisecondsSinceEpoch.toString();
 
         // .wav <---> AudioFormat.WAV
         // .mp4 .m4a .aac <---> AudioFormat.AAC
@@ -338,22 +394,13 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     });
   }
 
-  void onPlayAudio(String recordPath) async {
-    AudioPlayer audioPlayer = AudioPlayer();
-    await audioPlayer.play(recordPath, isLocal: true);
-  }
-
   void _insertOtherPersonLocalSaved(
       {String dataFileSaveInLocal, String durationRecordTime}) async {
     // row to insert
     OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
-    otherPersonDataModel.id = DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
     if (durationRecordTime != null &&
-        durationRecordTime
-            .toString()
-            .length > 0) {
+        durationRecordTime.toString().length > 0) {
       otherPersonDataModel.durationOfRecord = durationRecordTime;
     } else {
       otherPersonDataModel.durationOfRecord = "";
@@ -381,218 +428,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
         duration: const Duration(milliseconds: 300),
       );
     await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
-    countOther ++;
+    countOther++;
     getCountOtherMessage(context);
-  }
-
-  void getAllMessageFetch(BuildContext context) async {
-    List<OtherPersonDataModel> fetchListTemp =
-    await dbHelperOtherPerson.getAllMessageOtherPerson();
-    if (fetchListTemp != null && fetchListTemp.length > 0) {
-      setState(() {
-        fetchList.clear();
-        fetchList.addAll(fetchListTemp);
-        isReceivedList = true;
-      });
-    }
-  }
-
-  Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
-    if(otherPersonDataModel != null && otherPersonDataModel.isMySelf != null && otherPersonDataModel.isMySelf.toString().length > 2) {
-
-      if(otherPersonDataModel != null && otherPersonDataModel.isTypeText != null && otherPersonDataModel.isTypeText.toString().length > 2){
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Bubble(
-              padding: BubbleEdges.all(8),
-              alignment: Alignment.bottomLeft,
-              nip: BubbleNip.leftBottom,
-              elevation: 8,
-              color: Colors.blue[600],
-              child: Text(
-                "${otherPersonDataModel.data}",
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-              child: Text(
-                "${otherPersonDataModel.time}",
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey[600]),
-              ),
-            ),
-          ],
-        );
-      }
-      else{
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Bubble(
-                padding: BubbleEdges.all(8),
-                alignment: Alignment.bottomLeft,
-                nip: BubbleNip.leftBottom,
-                elevation: 8,
-                color: Colors.blue[600],
-                child: audioRecordWidgetsReceive(context, otherPersonDataModel)),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-              child: Text(
-                "${otherPersonDataModel.time}",
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey[600]),
-              ),
-            ),
-          ],
-        );
-      }
-
-    }
-   else
-     if (otherPersonDataModel != null &&
-        otherPersonDataModel.isTypeText
-            .toString()
-            .length > 0) {
-      return Container(
-        margin: EdgeInsets.only(top: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Bubble(
-              padding: BubbleEdges.all(8),
-              alignment: Alignment.topRight,
-              nip: BubbleNip.rightBottom,
-              elevation: 8,
-              color: Colors.blue[400],
-              child: Text(
-                "${otherPersonDataModel.data}",
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-              child: Text(
-                "${otherPersonDataModel.time}",
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey[600]),
-              ),
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Bubble(
-              padding: BubbleEdges.all(8),
-              alignment: Alignment.topRight,
-              nip: BubbleNip.rightBottom,
-              elevation: 8,
-              color: Colors.blue[400],
-              child: audioRecordWidgets(context, otherPersonDataModel)),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-            child: Text(
-              "${otherPersonDataModel.time}",
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.grey[600]),
-            ),
-          ),
-        ],
-      );
-    }
-  }
-
-  Widget audioRecordWidgets(BuildContext context,
-      OtherPersonDataModel otherPersonDataModel) {
-    return Container(
-      width: 150,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                HapticFeedback.lightImpact();
-                onPlayAudio(otherPersonDataModel.data);
-              },
-              child: Icon(
-                Icons.play_circle_outline,
-                color: Colors.white,
-                size: 25,
-              )),
-          Container(
-            color: Colors.white,
-            height: 1,
-            width: 50,
-          ),
-          Text(
-            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
-            style: TextStyle(color: Colors.white, fontSize: 10),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget audioRecordWidgetsReceive(BuildContext context,
-      OtherPersonDataModel otherPersonDataModel) {
-    return Container(
-      width: 150,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
-            style: TextStyle(color: Colors.white, fontSize: 10),
-          ),
-          Container(
-            color: Colors.white,
-            height: 1,
-            width: 50,
-          ),
-          GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                HapticFeedback.lightImpact();
-                onPlayAudio(otherPersonDataModel.data);
-              },
-              child: Icon(
-                Icons.play_circle_outline,
-                color: Colors.white,
-                size: 25,
-              )),
-        ],
-      ),
-    );
-  }
-  void getCountOtherMessage(BuildContext context)  {
-    setState(() {
-      MySelfScreen.countMyMessage = countOther;
-      OtherPersonScreen.countOtherMessage = 0;
-    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:chat_app_musicmuni_sample/Screens/MySelfScreen.dart';
 import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:flutter/cupertino.dart';
@@ -164,6 +165,11 @@ Widget inputFiledBothSideChat(BuildContext context, TextEditingController mySelf
       ),
     ),
   );
+}
+
+void onPlayAudio(String recordPath) async {
+  AudioPlayer audioPlayer = AudioPlayer();
+  await audioPlayer.play(recordPath, isLocal: true);
 }
 
 Widget iconsSendAndRecordWidget({BuildContext context, bool isSendShow}) {

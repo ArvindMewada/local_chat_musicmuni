@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'UtilsWidgets.dart';
+
 Widget dateConvertMicroToDisplay(BuildContext context, OtherPersonDataModel otherPersonDataModel) {
   if (otherPersonDataModel != null &&
       otherPersonDataModel.isMySelf != null &&
@@ -120,10 +122,6 @@ Widget audioRecordWidgets(
   );
 }
 
-void onPlayAudio(String recordPath) async {
-  AudioPlayer audioPlayer = AudioPlayer();
-  await audioPlayer.play(recordPath, isLocal: true);
-}
 
 Widget receiveWidgetTextField({BuildContext context, OtherPersonDataModel otherPersonDataModel}){
   return Column(
