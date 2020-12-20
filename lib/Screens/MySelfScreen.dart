@@ -28,7 +28,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   // Create a teoller and use it to retrieve the current value
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   final mySelfController = TextEditingController();
-  bool isMicShow = true;
+  bool isSendShow = false;
 
   FlutterAudioRecorder _recorder;
   Recording _current;
@@ -38,6 +38,20 @@ class _MySelfScreenState extends State<MySelfScreen> {
   initState() {
     super.initState();
     _init();
+    mySelfController.addListener(controlOfInputTextField);
+  }
+
+  void controlOfInputTextField() {
+    if (mySelfController.text != null &&
+        mySelfController.text.toString().length > 0) {
+      setState(() {
+        isSendShow = true;
+      });
+    } else {
+      setState(() {
+        isSendShow = false;
+      });
+    }
   }
 
   @override
@@ -45,10 +59,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
     mySelfController.dispose();
-    _recorder.stop();
-    _currentStatus = RecordingStatus.Unset;
     super.dispose();
   }
+
+  bool fullWidthAudioRecord = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,78 +73,194 @@ class _MySelfScreenState extends State<MySelfScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text("My Self"),
-              SizedBox(
-                height: 16,
-              ),
-              Container(
-                height: 45,
-                child: TextField(
-                  controller: mySelfController,
+          child: Container(
+            color: Colors.grey[300],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text("My Self"),
+                SizedBox(
+                  height: 16,
                 ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  // _insert(); // insert data to other data base
-                  permissionCheck();
-                  HapticFeedback.vibrate();
-                },
-                color: Colors.lightBlue,
-                child: Text(
-                  "Start",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                fullWidthAudioRecord
+                    ? audioRecordOpen()
+                    : Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(100))),
+                                child: new TextField(
+                                  showCursor: false,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 1,
+                                  maxLines: 10,
+                                  controller: mySelfController,
+                                  decoration: new InputDecoration(
+                                      filled: false,
+                                      border: InputBorder.none,
+                                      hintStyle: new TextStyle(
+                                          color: Colors.grey[800]),
+                                      hintText: "Type a message...",
+                                      fillColor: Colors.white70),
+                                ),
+                                padding: new EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.vibrate();
+                                  if (isSendShow) {
+                                    // todo insert text file
+                                    _insertOtherPersonLocalSaved(dataFileSaveInLocal: mySelfController.text);
+                                  } else {
+                                    // todo insert audio file
+                                    setState(() {
+                                      fullWidthAudioRecord = true;
+                                    });
+                                    permissionCheckAudioAndStorage();
+                                  }
+                                },
+                                behavior: HitTestBehavior.translucent,
+                                child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: countContainerWidget(
+                                        context: context, counter: 2)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                SizedBox(
+                  width: 8,
                 ),
-              ),
-              new FlatButton(
-                onPressed:
-                    _currentStatus != RecordingStatus.Unset ? _stop : null,
-                child: new Text("Stop", style: TextStyle(color: Colors.black)),
-                color: Colors.blueAccent.withOpacity(0.5),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              new FlatButton(
-                onPressed: () {
-                  onPlayAudio();
-                },
-                child: new Text("Play", style: TextStyle(color: Colors.black)),
-                color: Colors.blueAccent.withOpacity(0.5),
-              ),
-              new Text("File path of the record: ${_current?.path}"),
-              new Text(
-                  "Audio recording duration : ${_current?.duration.toString()}")
-            ],
+                new FlatButton(
+                  onPressed: () {
+                    onPlayAudio();
+                  },
+                  child:
+                      new Text("Play", style: TextStyle(color: Colors.black)),
+                  color: Colors.blueAccent.withOpacity(0.5),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  void permissionCheck() async {
+  Widget audioRecordOpen() {
+    return Container(
+      height: 50,
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+      ),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: Colors.blue[300],
+          borderRadius: BorderRadius.all(Radius.circular(100))),
+      child: Center(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  if (_currentStatus == RecordingStatus.Recording) {
+                    _init();
+                    setState(() {
+                      fullWidthAudioRecord = false;
+                    });
+                  }
+                },
+                child: Center(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(fontSize: 12, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Center(
+                child: Text(
+                  "${_current?.duration?.inSeconds.toString()}",
+                  style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            Expanded(
+                flex: 1,
+                child: GestureDetector(
+                    onTap: () {
+                      // todo stop audio and saved local
+                      if (_currentStatus == RecordingStatus.Recording) {
+                        _stop();
+                        setState(() {
+                          fullWidthAudioRecord = false;
+                        });
+
+                      }
+                    },
+                    behavior: HitTestBehavior.translucent,
+                    child: Center(
+                        child: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: 25,
+                    )))),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget countContainerWidget({BuildContext context, int counter}) {
+    return Container(
+      height: 45,
+      margin: EdgeInsets.only(left: 8, right: 16),
+      width: 45,
+      decoration: BoxDecoration(
+          color: Colors.blue[300],
+          borderRadius: BorderRadius.all(Radius.circular(100))),
+      child: Center(
+        child: isSendShow
+            ? Icon(
+                Icons.send,
+                color: Colors.white,
+                size: 25,
+              )
+            : Icon(
+                Icons.mic,
+                color: Colors.white,
+                size: 25,
+              ),
+      ),
+    );
+  }
+
+  void permissionCheckAudioAndStorage() async {
     bool isRequestPermission = await requestPermissionForStorageAndMicrophone();
     if (isRequestPermission) {
-      switch (_currentStatus) {
-        case RecordingStatus.Initialized:
-          {
-            _start();
-            break;
-          }
-        case RecordingStatus.Recording:
-          {
-            _stop();
-            break;
-          }
-        default:
-          break;
-      }
+      _start();
     }
   }
 
@@ -201,7 +331,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   _stop() async {
     var result = await _recorder.stop();
-    _insertOtherPersonLocalSaved(result.path);
+    _insertOtherPersonLocalSaved(dataFileSaveInLocal: result.path);
     setState(() {
       _current = result;
       _currentStatus = _current.status;
@@ -214,25 +344,28 @@ class _MySelfScreenState extends State<MySelfScreen> {
   }
 
   void getCountOtherMessage(BuildContext context) async {
-    int a = await dbHelperOtherPerson.getCountOtherMessage();
-    setState(() {
-      Home.countOtherMessage = a;
-    });
+    int countOtherMessage = await dbHelperOtherPerson.getCountOtherMessage();
+    if (countOtherMessage != null) {
+      setState(() {
+        Home.countOtherMessage = countOtherMessage;
+      });
+    }
   }
 
-  void _insertOtherPersonLocalSaved(String fileString) async {
+  void _insertOtherPersonLocalSaved({String dataFileSaveInLocal}) async {
     // row to insert
     OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
-    if (fileString != null && fileString.toString().length > 0) {
-      otherPersonDataModel.data = fileString;
-    } else {
-      otherPersonDataModel.data = mySelfController.text.toString();
+    if(isSendShow){
+      otherPersonDataModel.data = dataFileSaveInLocal.toString();
+    }else{
+      otherPersonDataModel.data = dataFileSaveInLocal.toString();
     }
+   
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('h:mm a').format(now);
     otherPersonDataModel.time = formattedDate;
-    await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
+    // await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
     // await dbHelperOtherPerson.newRowInsertExistingTableInOtherPerson(otherPersonDataModel);
     getCountOtherMessage(context);
   }

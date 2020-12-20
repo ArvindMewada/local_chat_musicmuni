@@ -73,8 +73,8 @@ class DatabaseHelperOtherPerson {
   // number of message count other person
   Future<int> getCountOtherMessage() async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
-    return Sqflite.firstIntValue(await dbClient
-        .rawQuery('SELECT COUNT(*) FROM $tableNameOtherPerson'));
+    int count = Sqflite.firstIntValue(await dbClient.rawQuery('SELECT COUNT(*) FROM $tableNameOtherPerson'));
+    return count;
   }
 
   //all chat fetch
