@@ -14,7 +14,10 @@ import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'MySelfScreen.dart';
+
 class OtherPersonScreen extends StatefulWidget {
+  static int countOtherMessage = 0;
   final LocalFileSystem localFileSystem;
 
   OtherPersonScreen({localFileSystem})
@@ -55,8 +58,8 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
 
   void countAllClear(BuildContext context){
     setState(() {
-      Home.countMyMessage = 0;
-      Home.countOtherMessage = 0;
+      MySelfScreen.countMyMessage = 0;
+      OtherPersonScreen.countOtherMessage = 0;
     });
   }
   void controlOfInputTextField() {
@@ -439,10 +442,6 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
         isReceivedList = true;
       });
     }
-    setState(() {
-      Home.countMyMessage = 0;
-      Home.countOtherMessage = 0;
-    });
   }
 
   Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
@@ -639,8 +638,8 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   }
   void getCountOtherMessage(BuildContext context)  {
     setState(() {
-      Home.countMyMessage = countOther;
-      Home.countOtherMessage = 0;
+      MySelfScreen.countMyMessage = countOther;
+      OtherPersonScreen.countOtherMessage = 0;
     });
   }
 }

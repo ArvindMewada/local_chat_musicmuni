@@ -22,11 +22,9 @@ Widget nameTitleWidgetAnotherWidget(
     {BuildContext context, String titleName, int countOther}) {
   return GestureDetector(
     onTap: () {
-      countOther = 0;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => OtherPersonScreen()),
-
       );
     },
     behavior: HitTestBehavior.translucent,

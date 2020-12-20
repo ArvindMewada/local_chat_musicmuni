@@ -1,11 +1,11 @@
+import 'package:chat_app_musicmuni_sample/Screens/MySelfScreen.dart';
+import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'UtilsWidgets.dart';
 
 class Home extends StatefulWidget {
-  static int countOtherMessage = 0;
-  static int countMyMessage = 0;
 
   @override
   State<StatefulWidget> createState() {
@@ -14,10 +14,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
   @override
   void initState() {
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +40,8 @@ class _HomeState extends State<Home> {
                 context: context,
                 nameAnother: "Other Person",
                 nameYourSelf: "My Self",
-                countOther: Home.countOtherMessage,
-                countMy: Home.countMyMessage,
+                countOther: OtherPersonScreen.countOtherMessage,
+                countMy: MySelfScreen.countMyMessage,
               ),
             ],
           ),

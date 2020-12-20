@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
+import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import '../Widgets/home_widget.dart';
 
 class MySelfScreen extends StatefulWidget {
+  static int countMyMessage = 0;
   final LocalFileSystem localFileSystem;
 
   MySelfScreen({localFileSystem})
@@ -56,8 +58,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   void countAllClear(BuildContext context){
     setState(() {
-      Home.countMyMessage = 0;
-      Home.countOtherMessage = 0;
+      MySelfScreen.countMyMessage = 0;
+      OtherPersonScreen.countOtherMessage = 0;
     });
   }
   void controlOfInputTextField() {
@@ -441,10 +443,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
         isReceivedList = true;
       });
     }
-    setState(() {
-      Home.countMyMessage = 0;
-      Home.countOtherMessage = 0;
-    });
   }
 
 
@@ -640,8 +638,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   void getCountOtherMessage(BuildContext context)  {
     setState(() {
-      Home.countOtherMessage = countMy;
-      Home.countMyMessage = 0;
+      OtherPersonScreen.countOtherMessage = countMy;
+      MySelfScreen.countMyMessage = 0;
     });
   }
 
