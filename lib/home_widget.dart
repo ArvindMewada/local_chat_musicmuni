@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 
 import 'Utils/Util.dart';
 import 'Widgets/UtilsWidgets.dart';
-import 'db/database_helper.dart';
+import 'db/DataBaseHelperOtherPerson.dart';
 
 class Home extends StatefulWidget {
   static int countOtherMessage = 0;
- @override
+  static int countMyMessage = 0;
+
+  @override
   State<StatefulWidget> createState() {
     return _HomeState();
   }
@@ -15,7 +17,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   // Create a teoller and use it to retrieve the current value
-  final dbHelper = DatabaseHelper.instance;
+  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
+  final dbHelperMySelf = DatabaseHelperOtherPerson.instanceOtherPeron;
 
   @override
   void initState() {
@@ -23,17 +26,11 @@ class _HomeState extends State<Home> {
     WidgetsBinding.instance
         .addPostFrameCallback((_) {
       getCountOtherMessage(context);
+      getCountMyMessage(context);
     });
     super.initState();
   }
 
-
-  void getCountOtherMessage(BuildContext context) async {
-    int a =  await dbHelper.getCountOtherDB();
-    setState(() {
-      Home.countOtherMessage = a;
-    });
-  }
 
 
   @override
@@ -51,7 +48,7 @@ class _HomeState extends State<Home> {
             children: <Widget>[
               titleChatWidget(context: context,text: "Chat"),
               titleOfClientWidget(context: context, nameAnother: "Other Person"
-                  , nameYourSelf: "My Self", countOther: Home.countOtherMessage, countMySelf: 0),
+                , nameYourSelf: "My Self",),
             ],
           ),
         ),
@@ -59,6 +56,19 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void getCountOtherMessage(BuildContext context) async {
+    int a =  await dbHelperOtherPerson.getCountOtherMessage();
+    setState(() {
+      Home.countOtherMessage = a;
+    });
+  }
+
+  void getCountMyMessage(BuildContext context) async {
+    int b =  await dbHelperOtherPerson.getCountOtherMessage();
+    setState(() {
+      Home.countMyMessage = b;
+    });
+  }
 
 
 }

@@ -3,13 +3,15 @@ import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../home_widget.dart';
+
 Widget titleChatWidget({BuildContext context, String text}) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Text(
       "$text",
       style: TextStyle(
-          color: Colors.grey[700], fontWeight: FontWeight.normal, fontSize: 24),
+          color: Colors.grey[900], fontWeight: FontWeight.normal, fontSize: 25),
     ),
   );
 }
@@ -17,19 +19,17 @@ Widget titleChatWidget({BuildContext context, String text}) {
 Widget titleOfClientWidget(
     {BuildContext context,
     String nameYourSelf,
-    String nameAnother,
-    int countOther,
-    int countMySelf}) {
+    String nameAnother,}) {
   return Container(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         nameTitleWidget(
-            context: context, titleName: nameAnother, countOther: countOther),
+            context: context, titleName: nameAnother, countOther: Home.countOtherMessage),
         dividerLineWidget(context),
         nameTitleOtherWidget(
-            context: context, titleName: nameYourSelf,countMy: countMySelf),
+            context: context, titleName: nameYourSelf, countMy: Home.countMyMessage),
         dividerLineWidget(context),
       ],
     ),
@@ -47,7 +47,7 @@ Widget nameTitleWidget(
     },
     behavior: HitTestBehavior.translucent,
     child: Container(
-      margin: EdgeInsets.only(top: 30, left: 16, right: 16),
+      margin: EdgeInsets.only(top: 30, left: 16, right: 16, bottom: 15),
       width: double.infinity,
       height: 45,
       child: Row(
@@ -57,21 +57,16 @@ Widget nameTitleWidget(
             "$titleName",
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[700],
+              color: Colors.grey[900],
             ),
           ),
-          countOther >  0 ?  Text(
-            "$countOther",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[700],
-            ),
-          ) : Container(),
+          countOther > 0
+              ? countContainerWidget(context: context, counter: countOther)
+              : Container(),
         ],
       ),
     ),
   );
-
 }
 
 Widget nameTitleOtherWidget(
@@ -85,7 +80,7 @@ Widget nameTitleOtherWidget(
     },
     behavior: HitTestBehavior.translucent,
     child: Container(
-      margin: EdgeInsets.only(top: 30, left: 16, right: 16),
+      margin: EdgeInsets.only(top: 15, left: 16, right: 16, bottom: 15),
       width: double.infinity,
       height: 45,
       child: Row(
@@ -95,17 +90,33 @@ Widget nameTitleOtherWidget(
             "$titleName",
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[700],
+              color: Colors.grey[900],
             ),
           ),
-          countMy >  0 ? Text(
-            "$countMy",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[700],
-            ),
-          ) : Container(),
+          countMy > 0
+              ? countContainerWidget(context: context, counter: countMy)
+              : Container(),
         ],
+      ),
+    ),
+  );
+}
+
+Widget countContainerWidget({BuildContext context, int counter}){
+  return Container(
+    height: 16,
+    margin: EdgeInsets.only(right: 20),
+    width: 16,
+    decoration: BoxDecoration(
+        color: Colors.blue[300],
+        borderRadius: BorderRadius.all(Radius.circular(40))),
+    child: Center(
+      child: Text(
+        "$counter",
+        style: TextStyle(
+            fontSize: 8,
+            color: Colors.white,
+            fontWeight: FontWeight.bold),
       ),
     ),
   );
@@ -115,6 +126,6 @@ Widget dividerLineWidget(BuildContext context) {
   return Container(
     width: double.infinity,
     height: 1,
-    color: Colors.grey[900],
+    color: Colors.grey[400],
   );
 }

@@ -1,7 +1,9 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:chat_app_musicmuni_sample/db/DataModel.dart';
-import 'package:chat_app_musicmuni_sample/db/database_helper.dart';
+import 'package:chat_app_musicmuni_sample/db/MyselfDataModel.dart';
+import 'package:chat_app_musicmuni_sample/db/DataBaseHelperOtherPerson.dart';
+import 'package:chat_app_musicmuni_sample/db/OtherPersonDataModel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class OtherPersonScreen extends StatefulWidget {
 
@@ -10,15 +12,16 @@ class OtherPersonScreen extends StatefulWidget {
 }
 
 class _OtherPersonScreenState extends State<OtherPersonScreen> {
-  List<Client> numberTruthList  = List();
-  final dbHelper = DatabaseHelper.instance;
+  List<OtherPersonDataModel> otherPersonMessageList  = List();
+  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
 
-  void _fetch() async {
+  void _fetchOtherPersonAllMessage() async {
     // row to insert
-   List<Client> list = await dbHelper.getAllClients();
+   List<OtherPersonDataModel> list = await dbHelperOtherPerson.getAllMessageOtherPerson();
    if(list != null){
      setState(() {
-       numberTruthList.addAll(list);
+       otherPersonMessageList.clear();
+       otherPersonMessageList.addAll(list);
      });
    }
   }
@@ -29,7 +32,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     super.initState();
     WidgetsBinding.instance
         .addPostFrameCallback((_) {
-          _fetch();
+          _fetchOtherPersonAllMessage();
     });
   }
 
@@ -49,16 +52,16 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
             child:  ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: numberTruthList.length,
+              itemCount: otherPersonMessageList.length,
               itemBuilder: (context, i) {
                 return ListTile(
                   title: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: (){
-                        onPlayAudio(numberTruthList[i].firstName);
+                        onPlayAudio(otherPersonMessageList[i].data);
                       },
-                      child: Text("firstName,,",
-                        style: TextStyle(color: Colors.black,fontSize: 14),)),
+                      child: dateConvertMicroToDisplay(otherPersonMessageList[i].time),
+                  ),
                 );
               },
             )
@@ -68,8 +71,14 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     );
   }
 
+  Widget  dateConvertMicroToDisplay(var timeInMillis){
+    var date = DateTime.fromMicrosecondsSinceEpoch(timeInMillis);
+    var formattedDate = DateFormat.yMMMd().format(date); // Apr 8, 2020
+    return  Text("$formattedDate,,",
+      style: TextStyle(color: Colors.black,fontSize: 14),
+    );
+  }
   void onPlayAudio(String name) async {
-    print("Play time : $name");
     AudioPlayer audioPlayer = AudioPlayer();
     await audioPlayer.play(name, isLocal: true);
   }

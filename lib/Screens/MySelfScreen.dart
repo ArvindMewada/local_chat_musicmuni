@@ -1,12 +1,10 @@
-
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
-import 'package:chat_app_musicmuni_sample/db/DataModel.dart';
-import 'package:chat_app_musicmuni_sample/db/database_helper.dart';
+import 'package:chat_app_musicmuni_sample/db/DataBaseHelperOtherPerson.dart';
+import 'package:chat_app_musicmuni_sample/db/OtherPersonDataModel.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +25,7 @@ class MySelfScreen extends StatefulWidget {
 
 class _MySelfScreenState extends State<MySelfScreen> {
   // Create a teoller and use it to retrieve the current value
-  final dbHelper = DatabaseHelper.instance;
+  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
   final mySelfController = TextEditingController();
   bool isMicShow = true;
 
@@ -35,13 +33,11 @@ class _MySelfScreenState extends State<MySelfScreen> {
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
 
-
   @override
   initState() {
     super.initState();
     _init();
   }
-
 
   @override
   void dispose() {
@@ -52,7 +48,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
     _currentStatus = RecordingStatus.Unset;
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +79,18 @@ class _MySelfScreenState extends State<MySelfScreen> {
                   HapticFeedback.vibrate();
                 },
                 color: Colors.lightBlue,
-                child: Text("Start", style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),),
+                child: Text(
+                  "Start",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-
               new FlatButton(
                 onPressed:
-                _currentStatus != RecordingStatus.Unset ? _stop : null,
-                child:
-                new Text("Stop", style: TextStyle(color: Colors.black)),
+                    _currentStatus != RecordingStatus.Unset ? _stop : null,
+                child: new Text("Stop", style: TextStyle(color: Colors.black)),
                 color: Colors.blueAccent.withOpacity(0.5),
               ),
               SizedBox(
@@ -101,8 +100,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
                 onPressed: () {
                   onPlayAudio();
                 },
-                child:
-                new Text("Play", style: TextStyle(color: Colors.black)),
+                child: new Text("Play", style: TextStyle(color: Colors.black)),
                 color: Colors.blueAccent.withOpacity(0.5),
               ),
               new Text("File path of the record: ${_current?.path}"),
@@ -114,7 +112,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
       ),
     );
   }
-
 
   void permissionCheck() async {
     bool isRequestPermission = await requestPermissionForStorageAndMicrophone();
@@ -133,10 +130,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
         default:
           break;
       }
-
     }
   }
-
 
   _init() async {
     try {
@@ -152,10 +147,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
         // can add extension like ".mp4" ".wav" ".m4a" ".aac"
         customPath = appDocDirectory.path +
             customPath +
-            DateTime
-                .now()
-                .millisecondsSinceEpoch
-                .toString();
+            DateTime.now().millisecondsSinceEpoch.toString();
 
         // .wav <---> AudioFormat.WAV
         // .mp4 .m4a .aac <---> AudioFormat.AAC
@@ -180,7 +172,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
       print(e);
     }
   }
-
 
   _start() async {
     try {
@@ -207,16 +198,14 @@ class _MySelfScreenState extends State<MySelfScreen> {
     }
   }
 
-
   _stop() async {
     var result = await _recorder.stop();
-    _insert(result.path);
+    _insertOtherPersonLocalSaved(result.path);
     setState(() {
       _current = result;
       _currentStatus = _current.status;
     });
   }
-
 
   void onPlayAudio() async {
     AudioPlayer audioPlayer = AudioPlayer();
@@ -224,29 +213,25 @@ class _MySelfScreenState extends State<MySelfScreen> {
   }
 
   void getCountOtherMessage(BuildContext context) async {
-    int a =  await dbHelper.getCountOtherDB();
+    int a = await dbHelperOtherPerson.getCountOtherMessage();
     setState(() {
       Home.countOtherMessage = a;
     });
   }
 
-
-  void _insert(String fileString) async {
+  void _insertOtherPersonLocalSaved(String fileString) async {
     // row to insert
-    Client client = Client();
-    client.id = DateTime
-        .now()
-        .millisecondsSinceEpoch;
-    if(fileString != null && fileString.toString().length > 0) {
-      client.firstName = fileString;
-    }else{
-      client.firstName = mySelfController.text.toString();
+    OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
+    otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
+    if (fileString != null && fileString.toString().length > 0) {
+      otherPersonDataModel.data = fileString;
+    } else {
+      otherPersonDataModel.data = mySelfController.text.toString();
     }
-    await dbHelper.createOtherDB(client.toMap());
+    otherPersonDataModel.time = DateTime.now().microsecond.toString();
+    print("date time print ${DateTime.now()}");
+    // await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
     // await dbHelper.newOtherDbRowInsert(client);
     getCountOtherMessage(context);
   }
-
-
-
 }
