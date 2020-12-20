@@ -67,95 +67,91 @@ class _MySelfScreenState extends State<MySelfScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text('My Self'),
         elevation: 8,
       ),
+      bottomNavigationBar: fullWidthAudioRecord
+          ? audioRecordOpen()
+          : Container(
+              margin: EdgeInsets.only(bottom: 30, left: 16),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 8,
+                      child: Container(
+                        margin: EdgeInsets.only(right: 16),
+                        padding: EdgeInsets.only(left: 30),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100))),
+                        child: new TextField(
+                          showCursor: false,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 1,
+                          maxLines: 10,
+                          controller: mySelfController,
+                          decoration: new InputDecoration(
+                              filled: false,
+                              border: InputBorder.none,
+                              hintStyle: new TextStyle(color: Colors.grey[500], fontSize: 14),
+                              hintText: "Type a message...",
+                              fillColor: Colors.white),
+                        ),
+
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () {
+                          HapticFeedback.vibrate();
+                          if (isSendShow) {
+                            // todo insert text file
+                            _insertOtherPersonLocalSaved(
+                                dataFileSaveInLocal: mySelfController.text);
+                          } else {
+                            // todo insert audio file
+                            setState(() {
+                              fullWidthAudioRecord = true;
+                            });
+                            permissionCheckAudioAndStorage();
+                          }
+                        },
+                        behavior: HitTestBehavior.translucent,
+                        child: Container(
+                           height: 50,
+                            width: 50,
+                            child: iconsSendAndRecordWidget(
+                                context: context, counter: 2)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            color: Colors.grey[300],
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text("My Self"),
-                SizedBox(
-                  height: 16,
-                ),
-                fullWidthAudioRecord
-                    ? audioRecordOpen()
-                    : Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100))),
-                                child: new TextField(
-                                  showCursor: false,
-                                  keyboardType: TextInputType.multiline,
-                                  minLines: 1,
-                                  maxLines: 10,
-                                  controller: mySelfController,
-                                  decoration: new InputDecoration(
-                                      filled: false,
-                                      border: InputBorder.none,
-                                      hintStyle: new TextStyle(
-                                          color: Colors.grey[800]),
-                                      hintText: "Type a message...",
-                                      fillColor: Colors.white70),
-                                ),
-                                padding: new EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 8),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: GestureDetector(
-                                onTap: () {
-                                  HapticFeedback.vibrate();
-                                  if (isSendShow) {
-                                    // todo insert text file
-                                    _insertOtherPersonLocalSaved(dataFileSaveInLocal: mySelfController.text);
-                                  } else {
-                                    // todo insert audio file
-                                    setState(() {
-                                      fullWidthAudioRecord = true;
-                                    });
-                                    permissionCheckAudioAndStorage();
-                                  }
-                                },
-                                behavior: HitTestBehavior.translucent,
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: countContainerWidget(
-                                        context: context, counter: 2)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                SizedBox(
-                  width: 8,
-                ),
-                new FlatButton(
-                  onPressed: () {
-                    onPlayAudio();
-                  },
-                  child:
-                      new Text("Play", style: TextStyle(color: Colors.black)),
-                  color: Colors.blueAccent.withOpacity(0.5),
-                ),
-              ],
-            ),
+          child:Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new FlatButton(
+                onPressed: () {
+                  onPlayAudio();
+                },
+                child:
+                new Text("Play", style: TextStyle(color: Colors.black)),
+                color: Colors.blueAccent.withOpacity(0.5),
+              ),
+            ],
           ),
         ),
       ),
@@ -164,6 +160,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   Widget audioRecordOpen() {
     return Container(
+      margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
       height: 50,
       padding: EdgeInsets.only(
         left: 16,
@@ -203,7 +200,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
               child: Center(
                 child: Text(
                   "${_current?.duration?.inSeconds.toString()}",
-                  style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -217,7 +217,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
                         setState(() {
                           fullWidthAudioRecord = false;
                         });
-
                       }
                     },
                     behavior: HitTestBehavior.translucent,
@@ -233,23 +232,21 @@ class _MySelfScreenState extends State<MySelfScreen> {
     );
   }
 
-  Widget countContainerWidget({BuildContext context, int counter}) {
+  Widget iconsSendAndRecordWidget({BuildContext context, int counter}) {
     return Container(
-      height: 45,
-      margin: EdgeInsets.only(left: 8, right: 16),
-      width: 45,
+      margin: EdgeInsets.only(right: 25),
       decoration: BoxDecoration(
           color: Colors.blue[300],
           borderRadius: BorderRadius.all(Radius.circular(100))),
       child: Center(
         child: isSendShow
             ? Icon(
-                Icons.send,
+                Icons.arrow_forward,
                 color: Colors.white,
                 size: 25,
               )
             : Icon(
-                Icons.mic,
+                Icons.mic_none,
                 color: Colors.white,
                 size: 25,
               ),
@@ -356,12 +353,12 @@ class _MySelfScreenState extends State<MySelfScreen> {
     // row to insert
     OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
-    if(isSendShow){
+    if (isSendShow) {
       otherPersonDataModel.data = dataFileSaveInLocal.toString();
-    }else{
+    } else {
       otherPersonDataModel.data = dataFileSaveInLocal.toString();
     }
-   
+
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('h:mm a').format(now);
     otherPersonDataModel.time = formattedDate;
