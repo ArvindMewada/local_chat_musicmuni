@@ -4,7 +4,7 @@ class OtherPersonDataModel {
   int id; // for unique id
   String data; // data -> text message or audio
   String time;
-  bool isTypeText; // default text or change to audio
+  String isTypeText; // default text or change to audio
   String durationOfRecord;
   String isMySelf;
 
@@ -23,6 +23,7 @@ class OtherPersonDataModel {
     durationOfRecord: json[Keys.durationOtherPerson],
     time: json[Keys.timeOtherPerson],
     isMySelf: json[Keys.isMyselfType],
+    isTypeText: json[Keys.isTypeText],
   );
 
   Map<String, dynamic> toMap() => {
@@ -31,6 +32,7 @@ class OtherPersonDataModel {
     Keys.dataOtherPerson: data,
     Keys.timeOtherPerson: time,
     Keys.isMyselfType: isMySelf,
+    Keys.isTypeText: isTypeText,
 
   };
 }
