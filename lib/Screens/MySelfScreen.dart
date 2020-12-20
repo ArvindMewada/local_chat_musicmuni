@@ -12,7 +12,7 @@ import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../home_widget.dart';
+import '../Widgets/home_widget.dart';
 
 class MySelfScreen extends StatefulWidget {
   final LocalFileSystem localFileSystem;
@@ -28,17 +28,21 @@ class _MySelfScreenState extends State<MySelfScreen> {
   // Create a teoller and use it to retrieve the current value
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   final mySelfController = TextEditingController();
-  bool isSendShow = false;
-
+  bool isSendShow = false, isListShow = false;
+  List<OtherPersonDataModel> otherPersonMessageList = List();
   FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
+  GlobalKey itemKey;
+  ScrollController scrollController;
 
   @override
   initState() {
     super.initState();
     _init();
     mySelfController.addListener(controlOfInputTextField);
+    itemKey = GlobalKey();
+    scrollController = ScrollController();
   }
 
   void controlOfInputTextField() {
@@ -75,7 +79,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
       bottomNavigationBar: fullWidthAudioRecord
           ? audioRecordOpen()
           : Container(
-              margin: EdgeInsets.only(bottom: 30, left: 16),
+              margin: EdgeInsets.only(bottom: 20, left: 16, top: 8),
               child: Padding(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -117,6 +121,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
                             // todo insert text file
                             _insertOtherPersonLocalSaved(
                                 dataFileSaveInLocal: mySelfController.text);
+
                           } else {
                             // todo insert audio file
                             setState(() {
@@ -139,25 +144,39 @@ class _MySelfScreenState extends State<MySelfScreen> {
             ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child:Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new FlatButton(
-                onPressed: () {
-                  onPlayAudio();
-                },
-                child:
-                new Text("Play", style: TextStyle(color: Colors.black)),
-                color: Colors.blueAccent.withOpacity(0.5),
-              ),
-            ],
-          ),
+          reverse: true,
+          child: sentMessageListBuild(context: context),
         ),
       ),
     );
   }
+  Widget sentMessageListBuild({BuildContext context}){
+    if(isListShow != null && isListShow){
+      return Flexible(
+        child: ListView.builder(
 
+          scrollDirection: Axis.vertical,
+          controller: scrollController,
+          shrinkWrap: true,
+          itemCount: otherPersonMessageList.length,
+          itemBuilder: (context, i) {
+            return ListTile(
+              title: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: (){
+
+                },
+                child: dateConvertMicroToDisplay(otherPersonMessageList[i]),
+              ),
+            );
+          },
+        ),
+      );
+
+    }else{
+      return Container();
+    }
+  }
   Widget audioRecordOpen() {
     return Container(
       margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
@@ -342,11 +361,11 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   void getCountOtherMessage(BuildContext context) async {
     int countOtherMessage = await dbHelperOtherPerson.getCountOtherMessage();
-    if (countOtherMessage != null) {
+      if (countOtherMessage != null) {
       setState(() {
         Home.countOtherMessage = countOtherMessage;
       });
-    }
+      }
   }
 
   void _insertOtherPersonLocalSaved({String dataFileSaveInLocal}) async {
@@ -362,8 +381,37 @@ class _MySelfScreenState extends State<MySelfScreen> {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('h:mm a').format(now);
     otherPersonDataModel.time = formattedDate;
+
+    setState(() {
+      isListShow = true;
+      mySelfController.text = "";
+      otherPersonMessageList.add(otherPersonDataModel);
+    });
+
+    scrollController.animateTo(
+      0.0,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(milliseconds: 300),
+    );
+
     // await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
     // await dbHelperOtherPerson.newRowInsertExistingTableInOtherPerson(otherPersonDataModel);
     getCountOtherMessage(context);
+  }
+
+
+
+  dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
+
+    return Container(
+        width: MediaQuery.of(context).size.width / 2,
+        height: 50,
+        color: Colors.blue,
+        child: Column(
+          children: <Widget>[
+            Text("${otherPersonDataModel.data}", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),),
+            Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey),),
+          ],
+        ));
   }
 }

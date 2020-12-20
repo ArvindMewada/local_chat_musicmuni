@@ -3,7 +3,7 @@ import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../home_widget.dart';
+import 'home_widget.dart';
 
 Widget titleChatWidget({BuildContext context, String text}) {
   return Container(

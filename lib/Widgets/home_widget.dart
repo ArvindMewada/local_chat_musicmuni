@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'DataBaseProvider/DataBaseHelperOtherPerson.dart';
-import 'Widgets/UtilsWidgets.dart';
+import '../DataBaseProvider/DataBaseHelperOtherPerson.dart';
+import 'UtilsWidgets.dart';
 
 class Home extends StatefulWidget {
   static int countOtherMessage = 0;
