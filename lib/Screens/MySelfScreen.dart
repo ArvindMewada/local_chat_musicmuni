@@ -9,6 +9,7 @@ import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../home_widget.dart';
@@ -228,10 +229,11 @@ class _MySelfScreenState extends State<MySelfScreen> {
     } else {
       otherPersonDataModel.data = mySelfController.text.toString();
     }
-    otherPersonDataModel.time = DateTime.now().microsecond.toString();
-    print("date time print ${DateTime.now()}");
-    // await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
-    // await dbHelper.newOtherDbRowInsert(client);
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('h:mm a').format(now);
+    otherPersonDataModel.time = formattedDate;
+    await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
+    // await dbHelperOtherPerson.newRowInsertExistingTableInOtherPerson(otherPersonDataModel);
     getCountOtherMessage(context);
   }
 }

@@ -71,10 +71,8 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     );
   }
 
-  Widget  dateConvertMicroToDisplay(var timeInMillis){
-    var date = DateTime.fromMicrosecondsSinceEpoch(timeInMillis);
-    var formattedDate = DateFormat.yMMMd().format(date); // Apr 8, 2020
-    return  Text("$formattedDate,,",
+  Widget  dateConvertMicroToDisplay(String displayTime){
+    return  Text("$displayTime,,",
       style: TextStyle(color: Colors.black,fontSize: 14),
     );
   }
