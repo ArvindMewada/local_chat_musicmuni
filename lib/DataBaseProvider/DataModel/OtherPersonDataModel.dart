@@ -1,10 +1,10 @@
-import 'Keys.dart';
+import '../Keys/Keys.dart';
 
 class OtherPersonDataModel {
   int id; // for unique id
   String data; // data -> text message or audio
   String time;
-  bool isTypeText;
+  bool isTypeText; // default text or change to audio
   String durationOfRecord;
 
   OtherPersonDataModel({

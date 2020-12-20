@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataBaseHelperOtherPerson.dart';
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperMySelf.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,9 @@ class MySelfScreen extends StatefulWidget {
 class _MySelfScreenState extends State<MySelfScreen> {
   // Create a teoller and use it to retrieve the current value
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
+
+  final dbHelperMySelf = DatabaseHelperMySelf.instanceMySelf;
+
   final mySelfController = TextEditingController();
   bool isSendShow = false, isListShow = false;
   List<OtherPersonDataModel> otherPersonMessageList = List();
@@ -151,6 +155,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
       ),
     );
   }
+
   Widget sentMessageListBuild({BuildContext context}){
     if(isListShow != null && isListShow){
       return ListView.builder(
@@ -168,6 +173,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
       return Container();
     }
   }
+
   Widget audioRecordOpen() {
     return Container(
       margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
@@ -354,11 +360,9 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   void getCountOtherMessage(BuildContext context) async {
     int countOtherMessage = await dbHelperOtherPerson.getCountOtherMessage();
-      if (countOtherMessage != null) {
-      setState(() {
-        Home.countOtherMessage = countOtherMessage;
-      });
-      }
+    setState(() {
+      Home.countOtherMessage = countOtherMessage;
+    });
   }
 
   void _insertOtherPersonLocalSaved({String dataFileSaveInLocal, String durationRecordTime}) async {
@@ -400,8 +404,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   }
 
 
-
-  dateConvertMicroToDisplay(otherPersonDataModel) {
+  Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
     if(otherPersonDataModel != null && otherPersonDataModel.isTypeText ){
       return Container(
         margin: EdgeInsets.only(top: 16),

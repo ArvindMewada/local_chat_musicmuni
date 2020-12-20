@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/OtherPersonDataModel.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'Keys.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/Keys/Keys.dart';
 
 class DatabaseHelperOtherPerson {
   // make this a singleton class
