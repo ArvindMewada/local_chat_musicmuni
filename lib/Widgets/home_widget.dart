@@ -1,4 +1,3 @@
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,20 +14,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // Create a teoller and use it to retrieve the current value
-  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   @override
   void initState() {
-    // TODO: implement initState
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) {
-      getCountOtherMessage(context);
-      getCountMyMessage(context);
-    });
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,28 +32,19 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              titleChatWidget(context: context,text: "Chat"),
-              titleOfClientWidget(context: context, nameAnother: "Other Person"
-                , nameYourSelf: "My Self",),
+              titleChatWidget(context: context, text: "Chat"),
+              titleOfClientWidget(
+                context: context,
+                nameAnother: "Other Person",
+                nameYourSelf: "My Self",
+                countOther: Home.countOtherMessage,
+                countMy: Home.countMyMessage,
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void getCountOtherMessage(BuildContext context) async {
-    int a =  await dbHelperOtherPerson.getCountOtherMessage();
-    setState(() {
-      Home.countOtherMessage = a;
-    });
-  }
-
-  void getCountMyMessage(BuildContext context) async {
-    // int b =  await dbHelperMySelf.getCountMySelfMessage();
-    // setState(() {
-    //   Home.countMyMessage = b;
-    // });
   }
 
 

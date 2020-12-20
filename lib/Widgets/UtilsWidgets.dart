@@ -16,33 +16,17 @@ Widget titleChatWidget({BuildContext context, String text}) {
   );
 }
 
-Widget titleOfClientWidget(
-    {BuildContext context,
-    String nameYourSelf,
-    String nameAnother,}) {
-  return Container(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        nameTitleWidget(
-            context: context, titleName: nameAnother, countOther: Home.countOtherMessage),
-        dividerLineWidget(context),
-        nameTitleOtherWidget(
-            context: context, titleName: nameYourSelf, countMy: Home.countMyMessage),
-        dividerLineWidget(context),
-      ],
-    ),
-  );
-}
 
-Widget nameTitleWidget(
+
+Widget nameTitleWidgetAnotherWidget(
     {BuildContext context, String titleName, int countOther}) {
   return GestureDetector(
     onTap: () {
+      countOther = 0;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => OtherPersonScreen()),
+
       );
     },
     behavior: HitTestBehavior.translucent,
@@ -60,16 +44,41 @@ Widget nameTitleWidget(
               color: Colors.grey[900],
             ),
           ),
-          countOther > 0
-              ? countContainerWidget(context: context, counter: countOther)
-              : Container(),
+          countContainerWidget(context: context, counter: countOther)
         ],
       ),
     ),
   );
 }
 
-Widget nameTitleOtherWidget(
+Widget titleOfClientWidget({
+  BuildContext context,
+  String nameYourSelf,
+  String nameAnother,
+  int countMy, 
+  int countOther
+}) {
+  return Container(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        nameTitleWidgetAnotherWidget(
+            context: context,
+            titleName: nameAnother,
+            countOther: countOther),
+        dividerLineWidget(context),
+        nameTitleMySelf(
+            context: context,
+            titleName: nameYourSelf,
+            countMy: countMy),
+        dividerLineWidget(context),
+      ],
+    ),
+  );
+}
+
+Widget nameTitleMySelf(
     {BuildContext context, String titleName, int countMy}) {
   return GestureDetector(
     onTap: () {
@@ -102,26 +111,27 @@ Widget nameTitleOtherWidget(
   );
 }
 
-Widget countContainerWidget({BuildContext context, int counter}){
-  return Container(
-    height: 16,
-    margin: EdgeInsets.only(right: 20),
-    width: 16,
-    decoration: BoxDecoration(
-        color: Colors.blue[300],
-        borderRadius: BorderRadius.all(Radius.circular(40))),
-    child: Center(
-      child: Text(
-        "$counter",
-        style: TextStyle(
-            fontSize: 8,
-            color: Colors.white,
-            fontWeight: FontWeight.bold),
+Widget countContainerWidget({BuildContext context, int counter}) {
+  if (counter == 0) {
+    return Container();
+  } else {
+    return Container(
+      height: 16,
+      margin: EdgeInsets.only(right: 20),
+      width: 16,
+      decoration: BoxDecoration(
+          color: Colors.blue[300],
+          borderRadius: BorderRadius.all(Radius.circular(40))),
+      child: Center(
+        child: Text(
+          "$counter",
+          style: TextStyle(
+              fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-
 
 Widget dividerLineWidget(BuildContext context) {
   return Container(

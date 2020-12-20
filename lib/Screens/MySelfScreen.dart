@@ -29,7 +29,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   // Create a teoller and use it to retrieve the current value
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   final mySelfController = TextEditingController();
-
+  int countMy = 0;
   List<OtherPersonDataModel> fetchList = List();
   bool isSendShow = false,
       isListShow = false,
@@ -50,9 +50,16 @@ class _MySelfScreenState extends State<MySelfScreen> {
     scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getAllMessageFetch(context);
+      countAllClear(context);
     });
   }
 
+  void countAllClear(BuildContext context){
+    setState(() {
+      Home.countMyMessage = 0;
+      Home.countOtherMessage = 0;
+    });
+  }
   void controlOfInputTextField() {
     if (mySelfController.text != null &&
         mySelfController.text
@@ -80,6 +87,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
@@ -419,6 +427,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
         duration: const Duration(milliseconds: 300),
       );
     await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
+    countMy++;
+    getCountOtherMessage(context);
   }
 
   void getAllMessageFetch(BuildContext context) async {
@@ -431,6 +441,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
         isReceivedList = true;
       });
     }
+    setState(() {
+      Home.countMyMessage = 0;
+      Home.countOtherMessage = 0;
+    });
   }
 
 
@@ -623,4 +637,12 @@ class _MySelfScreenState extends State<MySelfScreen> {
       ),
     );
   }
+
+  void getCountOtherMessage(BuildContext context)  {
+    setState(() {
+      Home.countOtherMessage = countMy;
+      Home.countMyMessage = 0;
+    });
+  }
+
 }

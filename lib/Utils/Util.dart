@@ -1,10 +1,10 @@
-
 import 'package:permission_handler/permission_handler.dart';
 
 Future<bool> requestPermissionForStorageAndMicrophone() async {
   final micPermission = await Permission.microphone.request();
   final storagePermission = await Permission.storage.request();
-  print('Permissions => Microphone: $micPermission, Storage: $storagePermission');
+  print(
+      'Permissions => Microphone: $micPermission, Storage: $storagePermission');
 
   if (micPermission == PermissionStatus.granted &&
       storagePermission == PermissionStatus.granted) {
@@ -23,4 +23,3 @@ Future<bool> requestPermissionForStorageAndMicrophone() async {
   }
   return false;
 }
-
