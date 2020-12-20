@@ -26,7 +26,7 @@ class MySelfScreen extends StatefulWidget {
 
 class _MySelfScreenState extends State<MySelfScreen> {
   // Create a teoller and use it to retrieve the current value
-  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
+  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
   final mySelfController = TextEditingController();
   bool isMicShow = true;
 

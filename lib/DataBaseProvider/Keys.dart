@@ -2,12 +2,9 @@ class Keys{
 
   // other person keys
  
-  static final String databaseNameOtherPerson = "OtherPersonDatabase.db";
   static final String idOtherPeron = "id_other_person";
   static final String dataOtherPerson = "data_other_person";
-  static final String timeOtherPerson = "date_other_person";
-  static final String tableNameOtherPerson = "other_person_table_name";
-  static final int  databaseVersionOtherPerson = 1;
+  static final String timeOtherPerson = "time_other_person";
 
 
   static final int  databaseVersionMySelf = 1;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'DataBaseProvider/DataBaseHelperOtherPerson.dart';
 import 'Widgets/UtilsWidgets.dart';
 
@@ -15,15 +16,15 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   // Create a teoller and use it to retrieve the current value
-  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
-  final dbHelperMySelf = DatabaseHelperOtherPerson.instanceOtherPeron;
+  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
+  final dbHelperMySelf = DatabaseHelperOtherPerson.instanceOtherPerson;
   @override
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance
         .addPostFrameCallback((_) {
       getCountOtherMessage(context);
-      getCountMyMessage(context);
+      // getCountMyMessage(context);
     });
     super.initState();
   }

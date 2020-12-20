@@ -11,7 +11,7 @@ class OtherPersonScreen extends StatefulWidget {
 
 class _OtherPersonScreenState extends State<OtherPersonScreen> {
   List<OtherPersonDataModel> otherPersonMessageList  = List();
-  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPeron;
+  final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
 
   void _fetchOtherPersonAllMessage() async {
     // row to insert

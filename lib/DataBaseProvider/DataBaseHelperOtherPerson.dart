@@ -10,8 +10,13 @@ class DatabaseHelperOtherPerson {
   // make this a singleton class
   DatabaseHelperOtherPerson._privateConstructor();
 
-  static final DatabaseHelperOtherPerson instanceOtherPeron =
+  static final DatabaseHelperOtherPerson instanceOtherPerson =
       DatabaseHelperOtherPerson._privateConstructor();
+
+  final String databaseNameOtherPerson = "OtherPersonDatabaseDB.db";
+  final String tableNameOtherPerson = "other_person_table";
+  final int  databaseVersionOtherPerson = 1;
+
 
   // only have a single app-wide reference to the database
   static Database _databaseOther;
@@ -28,16 +33,16 @@ class DatabaseHelperOtherPerson {
     Directory documentsDirectoryOtherPerson =
         await getApplicationDocumentsDirectory();
     String pathOtherPerson = join(documentsDirectoryOtherPerson.path,
-       Keys.databaseNameOtherPerson);
+        databaseNameOtherPerson);
     return await openDatabase(pathOtherPerson,
-        version: Keys.databaseVersionOtherPerson,
+        version: databaseVersionOtherPerson,
         onCreate: _onCreateOtherPerson);
   }
 
   // SQL code to create the database table
   Future _onCreateOtherPerson(Database dbOtherPerson, int version) async {
     await dbOtherPerson.execute('''
-          CREATE TABLE ${Keys.tableNameOtherPerson} (
+          CREATE TABLE $tableNameOtherPerson (
            ${Keys.idOtherPeron} INTEGER PRIMARY KEY,
             ${Keys.dataOtherPerson} TEXT NOT NULL,
             ${Keys.timeOtherPerson} TEXT NOT NULL 
@@ -47,18 +52,18 @@ class DatabaseHelperOtherPerson {
 
   // create database and entry data
   Future<int> createOtherPersonDB(Map<String, dynamic> map) async {
-    Database dbClient = await instanceOtherPeron.databaseOtherPerson;
-    var result = await dbClient.insert(Keys.tableNameOtherPerson, map);
+    Database dbClient = await instanceOtherPerson.databaseOtherPerson;
+    var result = await dbClient.insert(tableNameOtherPerson, map);
     return result;
   }
 
   // only row insert
   Future<int> newRowInsertExistingTableInOtherPerson(
       OtherPersonDataModel otherPersonDataModel) async {
-    Database dbClient = await instanceOtherPeron.databaseOtherPerson;
+    Database dbClient = await instanceOtherPerson.databaseOtherPerson;
     var result = await dbClient.rawInsert(
-        'INSERT INTO ${Keys.tableNameOtherPerson} (${Keys.idOtherPeron}'
-        ', ${Keys.databaseNameOtherPerson},${Keys.timeOtherPerson} )'
+        'INSERT INTO $tableNameOtherPerson (${Keys.idOtherPeron}'
+        ', $databaseNameOtherPerson,${Keys.timeOtherPerson} )'
         ' VALUES (\'${otherPersonDataModel.id}\', '
         '\'${otherPersonDataModel.data}'
         ', \'${otherPersonDataModel.time}\')');
@@ -67,15 +72,15 @@ class DatabaseHelperOtherPerson {
 
   // number of message count other person
   Future<int> getCountOtherMessage() async {
-    Database dbClient = await instanceOtherPeron.databaseOtherPerson;
+    Database dbClient = await instanceOtherPerson.databaseOtherPerson;
     return Sqflite.firstIntValue(await dbClient
-        .rawQuery('SELECT COUNT(*) FROM ${Keys.tableNameOtherPerson}'));
+        .rawQuery('SELECT COUNT(*) FROM $tableNameOtherPerson'));
   }
 
   //all chat fetch
   Future<List> getAllMessageOtherPerson() async {
-    Database dbClient = await instanceOtherPeron.databaseOtherPerson;
-    var res = await dbClient.query("${Keys.tableNameOtherPerson}");
+    Database dbClient = await instanceOtherPerson.databaseOtherPerson;
+    var res = await dbClient.query("$tableNameOtherPerson");
     List<OtherPersonDataModel> list = res.isNotEmpty
         ? res.map((c) => OtherPersonDataModel.fromMap(c)).toList()
         : [];
@@ -85,9 +90,9 @@ class DatabaseHelperOtherPerson {
 
   // single chat fetch
   Future<List> getSingleRowFetchOtherPerson() async {
-    Database dbClient = await instanceOtherPeron.databaseOtherPerson;
+    Database dbClient = await instanceOtherPerson.databaseOtherPerson;
     var result =
-        await dbClient.rawQuery('SELECT * FROM ${Keys.tableNameOtherPerson}');
+        await dbClient.rawQuery('SELECT * FROM $tableNameOtherPerson');
     return result.toList();
   }
 }
