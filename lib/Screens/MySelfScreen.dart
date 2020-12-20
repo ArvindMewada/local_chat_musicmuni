@@ -365,7 +365,11 @@ class _MySelfScreenState extends State<MySelfScreen> {
     // row to insert
     OtherPersonDataModel otherPersonDataModel = OtherPersonDataModel();
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
-    otherPersonDataModel.durationOfRecord =  durationRecordTime;
+    if(durationRecordTime != null && durationRecordTime.toString().length > 0) {
+      otherPersonDataModel.durationOfRecord = durationRecordTime;
+    }else{
+      otherPersonDataModel.durationOfRecord = " ";
+    }
 
     if (isSendShow) {
       otherPersonDataModel.isTypeText = true;
@@ -391,9 +395,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
       curve: Curves.fastOutSlowIn,
       duration: const Duration(milliseconds: 300),
     );
-
-    // await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
-    // await dbHelperOtherPerson.newRowInsertExistingTableInOtherPerson(otherPersonDataModel);
+    await dbHelperOtherPerson.createOtherPersonDB(otherPersonDataModel.toMap());
     getCountOtherMessage(context);
   }
 

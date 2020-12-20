@@ -14,8 +14,8 @@ class DatabaseHelperOtherPerson {
   static final DatabaseHelperOtherPerson instanceOtherPerson =
       DatabaseHelperOtherPerson._privateConstructor();
 
-  final String databaseNameOtherPerson = "OtherPersonDatabaseDB.db";
-  final String tableNameOtherPerson = "other_person_table";
+  final String databaseNameOtherPerson = "DataBaseOtherPerson.db";
+  final String tableNameOtherPerson = "table_other_person";
   final int databaseVersionOtherPerson = 1;
 
   // only have a single app-wide reference to the database
