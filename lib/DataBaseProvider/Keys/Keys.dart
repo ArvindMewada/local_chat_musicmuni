@@ -6,6 +6,7 @@ class Keys{
   static final String dataOtherPerson = "data_other_person";
   static final String durationOtherPerson = "duration_other_person";
   static final String timeOtherPerson = "time_other_person";
+  static final String isMyselfType = "is_my_self_type";
 
 
 

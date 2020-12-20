@@ -6,6 +6,7 @@ class OtherPersonDataModel {
   String time;
   bool isTypeText; // default text or change to audio
   String durationOfRecord;
+  String isMySelf;
 
   OtherPersonDataModel({
     this.id,
@@ -13,6 +14,7 @@ class OtherPersonDataModel {
     this.isTypeText,
     this.data,
     this.time,
+    this.isMySelf
   });
 
   factory OtherPersonDataModel.fromMap(Map<String, dynamic> json) => new OtherPersonDataModel(
@@ -20,6 +22,7 @@ class OtherPersonDataModel {
     data: json[Keys.dataOtherPerson],
     durationOfRecord: json[Keys.durationOtherPerson],
     time: json[Keys.timeOtherPerson],
+    isMySelf: json[Keys.isMyselfType],
   );
 
   Map<String, dynamic> toMap() => {
@@ -27,6 +30,7 @@ class OtherPersonDataModel {
     Keys.durationOtherPerson: durationOfRecord,
     Keys.dataOtherPerson: data,
     Keys.timeOtherPerson: time,
+    Keys.isMyselfType: isMySelf,
 
   };
 }

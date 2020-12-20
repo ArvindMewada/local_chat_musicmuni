@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/MyselfDataModel.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperMySelf.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
@@ -33,8 +34,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
   final dbHelperMySelf = DatabaseHelperMySelf.instanceMySelf;
 
   final mySelfController = TextEditingController();
-  bool isSendShow = false, isListShow = false;
+  bool isSendShow = false, isListShow = false, isListShowReceive = false;
   List<OtherPersonDataModel> otherPersonMessageList = List();
+  List<MyselfDataModel> mySelfDataModelList = List();
+
   FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
@@ -173,6 +176,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
       return Container();
     }
   }
+
 
   Widget audioRecordOpen() {
     return Container(
@@ -386,6 +390,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('h:mm a').format(now);
     otherPersonDataModel.time = formattedDate;
+    otherPersonDataModel.isMySelf = "isMyself";
 
     setState(() {
       isListShow = true;
@@ -405,49 +410,54 @@ class _MySelfScreenState extends State<MySelfScreen> {
 
 
   Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
-    if(otherPersonDataModel != null && otherPersonDataModel.isTypeText ){
-      return Container(
-        margin: EdgeInsets.only(top: 16),
-        child: Column(
+    if(otherPersonDataModel != null && otherPersonDataModel.isMySelf != null
+        && otherPersonDataModel.isMySelf.toString().length > 2){
+      return Text("recived");
+    }else {
+      if(otherPersonDataModel != null && otherPersonDataModel.isTypeText ){
+        return Container(
+          margin: EdgeInsets.only(top: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Bubble(
+                padding: BubbleEdges.all(8),
+                alignment: Alignment.topRight,
+                nip: BubbleNip.rightBottom,
+                elevation: 8,
+                color: Colors.blue[300],
+                child:
+                Text("${otherPersonDataModel.data}",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top:8.0, bottom: 16),
+                child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
+              ),
+            ],
+          ),
+        );
+      }else{
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Bubble(
-              padding: BubbleEdges.all(8),
-              alignment: Alignment.topRight,
-              nip: BubbleNip.rightBottom,
-              elevation: 8,
-              color: Colors.blue[300],
-              child:
-              Text("${otherPersonDataModel.data}",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),),
+                padding: BubbleEdges.all(8),
+                alignment: Alignment.topRight,
+                nip: BubbleNip.rightBottom,
+                elevation: 8,
+                color: Colors.blue[300],
+                child: audioRecordWidgets(context, otherPersonDataModel)
             ),
             Padding(
               padding: const EdgeInsets.only(top:8.0, bottom: 16),
               child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
             ),
           ],
-        ),
-      );
-    }else{
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Bubble(
-            padding: BubbleEdges.all(8),
-            alignment: Alignment.topRight,
-            nip: BubbleNip.rightBottom,
-            elevation: 8,
-            color: Colors.blue[300],
-            child: audioRecordWidgets(context, otherPersonDataModel)
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top:8.0, bottom: 16),
-            child: Text("${otherPersonDataModel.time}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal, color: Colors.grey[600]),),
-          ),
-        ],
-      );
+        );
+      }
     }
 
   }
