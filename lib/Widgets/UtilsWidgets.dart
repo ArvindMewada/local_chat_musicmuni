@@ -3,7 +3,7 @@ import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'home_widget.dart';
+import 'HomeScreenWidget.dart';
 
 Widget titleChatWidget({BuildContext context, String text}) {
   return Container(
@@ -136,5 +136,56 @@ Widget dividerLineWidget(BuildContext context) {
     width: double.infinity,
     height: 1,
     color: Colors.grey[400],
+  );
+}
+
+Widget inputFiledBothSideChat(BuildContext context, TextEditingController mySelfController){
+  return   Expanded(
+    flex: 8,
+    child: Container(
+      margin: EdgeInsets.only(right: 16),
+      padding: EdgeInsets.only(left: 30, right: 20),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(100))),
+      child: new TextField(
+        showCursor: false,
+        keyboardType: TextInputType.multiline,
+        minLines: 1,
+        maxLines: 50,
+        controller: mySelfController,
+        decoration: new InputDecoration(
+            filled: false,
+            border: InputBorder.none,
+            hintStyle:
+            new TextStyle(color: Colors.grey[500], fontSize: 14),
+            hintText: "Type a message...",
+            fillColor: Colors.white),
+      ),
+    ),
+  );
+}
+
+Widget iconsSendAndRecordWidget({BuildContext context, bool isSendShow}) {
+  return Container(
+    height: 50,
+    width: 50,
+    margin: EdgeInsets.only(right: 25),
+    decoration: BoxDecoration(
+        color: Colors.blue[300],
+        borderRadius: BorderRadius.all(Radius.circular(100))),
+    child: Center(
+      child: isSendShow
+          ? Icon(
+        Icons.arrow_forward,
+        color: Colors.white,
+        size: 25,
+      )
+          : Icon(
+        Icons.mic_none,
+        color: Colors.white,
+        size: 25,
+      ),
+    ),
   );
 }

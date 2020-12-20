@@ -6,7 +6,8 @@ import 'package:bubble/bubble.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
-import 'package:chat_app_musicmuni_sample/Widgets/home_widget.dart';
+import 'package:chat_app_musicmuni_sample/Widgets/UtilsWidgets.dart';
+import 'package:chat_app_musicmuni_sample/Widgets/HomeScreenWidget.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,31 +110,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Expanded(
-                flex: 8,
-                child: Container(
-                  margin: EdgeInsets.only(right: 16),
-                  padding: EdgeInsets.only(left: 30, right: 20),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(100))),
-                  child: new TextField(
-                    showCursor: false,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 1,
-                    maxLines: 50,
-                    controller: mySelfController,
-                    decoration: new InputDecoration(
-                        filled: false,
-                        border: InputBorder.none,
-                        hintStyle: new TextStyle(
-                            color: Colors.grey[500], fontSize: 14),
-                        hintText: "Type a message...",
-                        fillColor: Colors.white),
-                  ),
-                ),
-              ),
+              inputFiledBothSideChat(context, mySelfController),
               Expanded(
                 flex: 2,
                 child: GestureDetector(
@@ -152,12 +129,8 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
                     }
                   },
                   behavior: HitTestBehavior.translucent,
-                  child: Container(
-                      height: 50,
-                      width: 50,
-                      child: iconsSendAndRecordWidget(
-                          context: context, counter: 2)),
-                ),
+                  child:iconsSendAndRecordWidget(context: context, isSendShow: isSendShow),
+              ),
               ),
             ],
           ),
@@ -277,27 +250,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
     );
   }
 
-  Widget iconsSendAndRecordWidget({BuildContext context, int counter}) {
-    return Container(
-      margin: EdgeInsets.only(right: 25),
-      decoration: BoxDecoration(
-          color: Colors.blue[300],
-          borderRadius: BorderRadius.all(Radius.circular(100))),
-      child: Center(
-        child: isSendShow
-            ? Icon(
-          Icons.arrow_forward,
-          color: Colors.white,
-          size: 25,
-        )
-            : Icon(
-          Icons.mic_none,
-          color: Colors.white,
-          size: 25,
-        ),
-      ),
-    );
-  }
+
 
   void permissionCheckAudioAndStorage() async {
     bool isRequestPermission = await requestPermissionForStorageAndMicrophone();
@@ -559,7 +512,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 8.0, bottom: 16),
             child: Text(
-              "${otherPersonDataModel.time.substring(2, 7)}",
+              "${otherPersonDataModel.time}",
               style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.normal,
