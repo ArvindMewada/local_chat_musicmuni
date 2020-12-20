@@ -392,7 +392,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
             .length > 0) {
       otherPersonDataModel.durationOfRecord = durationRecordTime;
     } else {
-      otherPersonDataModel.durationOfRecord = " ";
+      otherPersonDataModel.durationOfRecord = "";
     }
     if (isSendShow) {
       otherPersonDataModel.isTypeText = "true";
@@ -432,32 +432,9 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
   }
 
   Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
-    if(otherPersonDataModel != null && otherPersonDataModel.isMySelf != null && otherPersonDataModel.isMySelf.toString().length > 0) {
-      if(otherPersonDataModel != null && otherPersonDataModel.isTypeText != null && otherPersonDataModel.isTypeText.toString().length > 0){
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Bubble(
-                padding: BubbleEdges.all(8),
-                alignment: Alignment.bottomLeft,
-                nip: BubbleNip.leftBottom,
-                elevation: 8,
-                color: Colors.blue[600],
-                child: audioRecordWidgetsReceive(context, otherPersonDataModel)),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-              child: Text(
-                "${otherPersonDataModel.time.substring(2, 7)}",
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey[600]),
-              ),
-            ),
-          ],
-        );
-      }else{
+    if(otherPersonDataModel != null && otherPersonDataModel.isMySelf != null && otherPersonDataModel.isMySelf.toString().length > 2) {
+
+      if(otherPersonDataModel != null && otherPersonDataModel.isTypeText != null && otherPersonDataModel.isTypeText.toString().length > 2){
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -489,9 +466,35 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
           ],
         );
       }
+      else{
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Bubble(
+                padding: BubbleEdges.all(8),
+                alignment: Alignment.bottomLeft,
+                nip: BubbleNip.leftBottom,
+                elevation: 8,
+                color: Colors.blue[600],
+                child: audioRecordWidgetsReceive(context, otherPersonDataModel)),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
+              child: Text(
+                "${otherPersonDataModel.time.substring(2, 7)}",
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.grey[600]),
+              ),
+            ),
+          ],
+        );
+      }
 
     }
-   else if (otherPersonDataModel != null &&
+   else
+     if (otherPersonDataModel != null &&
         otherPersonDataModel.isTypeText
             .toString()
             .length > 0) {
@@ -597,7 +600,7 @@ class _OtherPersonScreenState extends State<OtherPersonScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
+            "${otherPersonDataModel.durationOfRecord}",
             style: TextStyle(color: Colors.white, fontSize: 10),
           ),
           Container(

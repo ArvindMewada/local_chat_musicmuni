@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/MyselfDataModel.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/OtherPersonDataModel.dart';
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperMySelf.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Utils/Util.dart';
 import 'package:file/local.dart';
@@ -175,7 +173,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
           itemCount: fetchList.length,
           itemBuilder: (context, i) {
             return ListTile(
-              title: dataRecievedWidget(fetchList[i]),
+              title: dateConvertMicroToDisplay(fetchList[i]),
             );
           },
         ) : Container(),
@@ -399,10 +397,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
       otherPersonDataModel.durationOfRecord = "";
     }
     if (isSendShow) {
-      otherPersonDataModel.isTypeText = "";
+      otherPersonDataModel.isTypeText = "true";
       otherPersonDataModel.data = dataFileSaveInLocal.toString();
     } else {
-      otherPersonDataModel.isTypeText = "true";
+      otherPersonDataModel.isTypeText = "";
       otherPersonDataModel.data = dataFileSaveInLocal.toString();
     }
     String formattedDate = DateFormat('h:mm a').format(DateTime.now());
@@ -435,70 +433,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
     }
   }
 
-  Widget dataRecievedWidget(OtherPersonDataModel otherPersonDataModel){
-    if(otherPersonDataModel != null && otherPersonDataModel.isMySelf != null
-        && otherPersonDataModel.isMySelf.toString().length > 0) {
-      if(otherPersonDataModel != null && otherPersonDataModel.isTypeText != null && otherPersonDataModel.isTypeText.toString().length > 0){
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Bubble(
-                padding: BubbleEdges.all(8),
-                alignment: Alignment.bottomLeft,
-                nip: BubbleNip.leftBottom,
-                elevation: 8,
-                color: Colors.blue[600],
-                child: audioRecordWidgetsReceive(context, otherPersonDataModel)),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-              child: Text(
-                "${otherPersonDataModel.time.substring(2, 7)}",
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey[600]),
-              ),
-            ),
-          ],
-        );
-      }else {
-        return Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Bubble(
-                padding: BubbleEdges.all(8),
-                alignment: Alignment.topRight,
-                nip: BubbleNip.rightBottom,
-                elevation: 8,
-                color: Colors.blue[400],
-                child: Text(
-                  "${otherPersonDataModel.data}",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-                child: Text(
-                  "${otherPersonDataModel.time}",
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.grey[600]),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-      else{
+
+  Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
+    if(otherPersonDataModel != null && otherPersonDataModel.isMySelf != null && otherPersonDataModel.isMySelf.toString().length == 0) {
+      if(otherPersonDataModel != null && otherPersonDataModel.isTypeText != null && otherPersonDataModel.isTypeText.toString().length > 2){
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -530,10 +468,33 @@ class _MySelfScreenState extends State<MySelfScreen> {
           ],
         );
       }
+      else{
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Bubble(
+                padding: BubbleEdges.all(8),
+                alignment: Alignment.bottomLeft,
+                nip: BubbleNip.leftBottom,
+                elevation: 8,
+                color: Colors.blue[600],
+                child: audioRecordWidgetsReceive(context, otherPersonDataModel)),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 16),
+              child: Text(
+                "${otherPersonDataModel.time.substring(2, 7)}",
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.grey[600]),
+              ),
+            ),
+          ],
+        );
+      }
     }
-
-  Widget dateConvertMicroToDisplay(OtherPersonDataModel otherPersonDataModel) {
-     if (otherPersonDataModel != null &&
+    else if (otherPersonDataModel != null &&
         otherPersonDataModel.isTypeText
             .toString()
             .length > 0) {
@@ -622,7 +583,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
             width: 50,
           ),
           Text(
-            "${otherPersonDataModel.durationOfRecord}",
+            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
             style: TextStyle(color: Colors.white, fontSize: 10),
           ),
         ],
@@ -639,7 +600,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            "${otherPersonDataModel.durationOfRecord.substring(2, 7)}",
+            "${otherPersonDataModel.durationOfRecord}",
             style: TextStyle(color: Colors.white, fontSize: 10),
           ),
           Container(

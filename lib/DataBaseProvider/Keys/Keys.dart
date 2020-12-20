@@ -10,10 +10,4 @@ class Keys{
   static final String isTypeText = "is_text_type";
 
 
-
-  static final String idMyself = "id_my_self";
-  static final String dataMyself = "data_my_self";
-  static final String timeMyself = "time_my_self";
-  static final String durationMySelf = "duration_my_self";
-
 }

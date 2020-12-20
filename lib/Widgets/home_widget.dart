@@ -1,4 +1,3 @@
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperMySelf.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // Create a teoller and use it to retrieve the current value
   final dbHelperOtherPerson = DatabaseHelperOtherPerson.instanceOtherPerson;
-  final dbHelperMySelf = DatabaseHelperMySelf.instanceMySelf;
   @override
   void initState() {
     // TODO: implement initState
@@ -63,10 +61,10 @@ class _HomeState extends State<Home> {
   }
 
   void getCountMyMessage(BuildContext context) async {
-    int b =  await dbHelperMySelf.getCountMySelfMessage();
-    setState(() {
-      Home.countMyMessage = b;
-    });
+    // int b =  await dbHelperMySelf.getCountMySelfMessage();
+    // setState(() {
+    //   Home.countMyMessage = b;
+    // });
   }
 
 
