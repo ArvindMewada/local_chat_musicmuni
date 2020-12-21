@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,27 +6,32 @@ import 'package:flutter/services.dart';
 
 import 'UtilsWidgets.dart';
 
-Widget dateConvertMicroToDisplay(BuildContext context, DataModelAll otherPersonDataModel) {
+Widget dateConvertMicroToDisplay(
+    BuildContext context, DataModelAll otherPersonDataModel) {
   if (otherPersonDataModel != null &&
       otherPersonDataModel.isMySelf != null &&
       otherPersonDataModel.isMySelf.toString().length == 0) {
     if (otherPersonDataModel != null &&
         otherPersonDataModel.isTypeText != null &&
         otherPersonDataModel.isTypeText.toString().length > 2) {
-      return receiveWidgetTextField(context: context, otherPersonDataModel: otherPersonDataModel);
+      return receiveWidgetTextField(
+          context: context, otherPersonDataModel: otherPersonDataModel);
     } else {
-      return receiverWidgetAudioField(context: context, otherPersonDataModel: otherPersonDataModel);
+      return receiverWidgetAudioField(
+          context: context, otherPersonDataModel: otherPersonDataModel);
     }
   } else if (otherPersonDataModel != null &&
       otherPersonDataModel.isTypeText.toString().length > 0) {
-    return isTextTypeShowWidget(context: context, otherPersonDataModel: otherPersonDataModel);
+    return isTextTypeShowWidget(
+        context: context, otherPersonDataModel: otherPersonDataModel);
   } else {
-    return isAudioTypeWidget(context: context, otherPersonDataModel: otherPersonDataModel);
+    return isAudioTypeWidget(
+        context: context, otherPersonDataModel: otherPersonDataModel);
   }
 }
 
-
-Widget isTextTypeShowWidget({BuildContext context, DataModelAll otherPersonDataModel}){
+Widget isTextTypeShowWidget(
+    {BuildContext context, DataModelAll otherPersonDataModel}) {
   return Container(
     margin: EdgeInsets.only(top: 16),
     child: Column(
@@ -63,7 +67,8 @@ Widget isTextTypeShowWidget({BuildContext context, DataModelAll otherPersonDataM
   );
 }
 
-Widget isAudioTypeWidget({BuildContext context, DataModelAll otherPersonDataModel}){
+Widget isAudioTypeWidget(
+    {BuildContext context, DataModelAll otherPersonDataModel}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.end,
     mainAxisAlignment: MainAxisAlignment.end,
@@ -122,8 +127,8 @@ Widget audioRecordWidgets(
   );
 }
 
-
-Widget receiveWidgetTextField({BuildContext context, DataModelAll otherPersonDataModel}){
+Widget receiveWidgetTextField(
+    {BuildContext context, DataModelAll otherPersonDataModel}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -137,9 +142,7 @@ Widget receiveWidgetTextField({BuildContext context, DataModelAll otherPersonDat
         child: Text(
           "${otherPersonDataModel.data}",
           style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.normal,
-              color: Colors.white),
+              fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),
         ),
       ),
       Padding(
@@ -156,7 +159,8 @@ Widget receiveWidgetTextField({BuildContext context, DataModelAll otherPersonDat
   );
 }
 
-Widget receiverWidgetAudioField({BuildContext context, DataModelAll otherPersonDataModel}){
+Widget receiverWidgetAudioField(
+    {BuildContext context, DataModelAll otherPersonDataModel}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -167,8 +171,7 @@ Widget receiverWidgetAudioField({BuildContext context, DataModelAll otherPersonD
           nip: BubbleNip.leftBottom,
           elevation: 8,
           color: Colors.blue[600],
-          child:
-          audioRecordWidgetsReceive(context, otherPersonDataModel)),
+          child: audioRecordWidgetsReceive(context, otherPersonDataModel)),
       Padding(
         padding: const EdgeInsets.only(top: 8.0, bottom: 16),
         child: Text(

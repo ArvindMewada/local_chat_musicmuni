@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
+import 'package:chat_app_musicmuni_sample/DataBaseProvider/Keys/Keys.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
-import 'package:chat_app_musicmuni_sample/DataBaseProvider/Keys/Keys.dart';
 
 class DatabaseHelperOtherPerson {
   // make this a singleton class
@@ -64,13 +63,13 @@ class DatabaseHelperOtherPerson {
   Future<int> newRowInsertExistingTableInOtherPerson(
       DataModelAll otherPersonDataModel) async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
-    var result = await dbClient
-        .rawInsert('INSERT INTO $tableNameOtherPerson (${Keys.idOtherPeron}'
-            ', $databaseNameOtherPerson,${Keys.timeOtherPerson},${Keys.durationOtherPerson} )'
-            ' VALUES (\'${otherPersonDataModel.id}\', '
-            '\'${otherPersonDataModel.data}'
-            '\'${otherPersonDataModel.durationOfRecord}'
-            ', \'${otherPersonDataModel.time}\')');
+    var result = await dbClient.rawInsert(
+        'INSERT INTO $tableNameOtherPerson (${Keys.idOtherPeron}'
+        ', $databaseNameOtherPerson,${Keys.timeOtherPerson},${Keys.durationOtherPerson} )'
+        ' VALUES (\'${otherPersonDataModel.id}\', '
+        '\'${otherPersonDataModel.data}'
+        '\'${otherPersonDataModel.durationOfRecord}'
+        ', \'${otherPersonDataModel.time}\')');
     return result;
   }
 
@@ -86,9 +85,8 @@ class DatabaseHelperOtherPerson {
   Future<List> getAllMessageOtherPerson() async {
     Database dbClient = await instanceOtherPerson.databaseOtherPerson;
     var res = await dbClient.query("$tableNameOtherPerson");
-    List<DataModelAll> list = res.isNotEmpty
-        ? res.map((c) => DataModelAll.fromMap(c)).toList()
-        : [];
+    List<DataModelAll> list =
+        res.isNotEmpty ? res.map((c) => DataModelAll.fromMap(c)).toList() : [];
     //   var result = await dbClient.rawQuery('SELECT * FROM table');
     return list;
   }

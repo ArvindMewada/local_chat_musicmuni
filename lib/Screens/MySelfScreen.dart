@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
-import 'package:bubble/bubble.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/DataModel/DataModelAll.dart';
 import 'package:chat_app_musicmuni_sample/DataBaseProvider/ProviderNotify/DataBaseHelperOtherPerson.dart';
 import 'package:chat_app_musicmuni_sample/Screens/OtherPersonScreen.dart';
@@ -121,7 +119,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
     );
   }
 
-  Widget sendAndMicIconsWidget(BuildContext context){
+  Widget sendAndMicIconsWidget(BuildContext context) {
     return Expanded(
       flex: 2,
       child: GestureDetector(
@@ -140,7 +138,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
           }
         },
         behavior: HitTestBehavior.translucent,
-        child:iconsSendAndRecordWidget(context: context, isSendShow: isSendShow),
+        child:
+            iconsSendAndRecordWidget(context: context, isSendShow: isSendShow),
       ),
     );
   }
@@ -148,9 +147,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
   Widget sentMessageListBuild({BuildContext context}) {
     return Column(
       children: <Widget>[
-        fetchList != null
-            ? listBuilderWidget(context, fetchList)
-            : Container(),
+        fetchList != null ? listBuilderWidget(context, fetchList) : Container(),
         otherDataList != null
             ? listBuilderWidget(context, otherDataList)
             : Container(),
@@ -158,7 +155,7 @@ class _MySelfScreenState extends State<MySelfScreen> {
     );
   }
 
-  Widget listBuilderWidget(BuildContext context, otherDataList ){
+  Widget listBuilderWidget(BuildContext context, otherDataList) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       controller: scrollController,
@@ -198,8 +195,8 @@ class _MySelfScreenState extends State<MySelfScreen> {
     );
   }
 
-  Widget cancelButtonRecord(BuildContext context){
-    return  Expanded(
+  Widget cancelButtonRecord(BuildContext context) {
+    return Expanded(
       flex: 1,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -222,22 +219,20 @@ class _MySelfScreenState extends State<MySelfScreen> {
     );
   }
 
-  Widget timeRecordWidget(BuildContext context){
+  Widget timeRecordWidget(BuildContext context) {
     return Expanded(
       flex: 5,
       child: Center(
         child: Text(
           "${_current?.duration?.inSeconds.toString()}",
           style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
+              fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
-  Widget audioSendWidget(BuildContext context){
+  Widget audioSendWidget(BuildContext context) {
     return Expanded(
         flex: 1,
         child: GestureDetector(
@@ -254,19 +249,20 @@ class _MySelfScreenState extends State<MySelfScreen> {
             behavior: HitTestBehavior.translucent,
             child: Center(
                 child: Icon(
-                  Icons.send,
-                  color: Colors.white,
-                  size: 25,
-                ))));
+              Icons.send,
+              color: Colors.white,
+              size: 25,
+            ))));
   }
-
 
   void _insertOtherPersonLocalSaved(
       {String dataFileSaveInLocal, String durationRecordTime}) async {
     // row to insert
     DataModelAll otherPersonDataModel = DataModelAll();
-    dataModelSavedLocal(durationRecordTime: durationRecordTime,
-        dataFileSaveInLocal: dataFileSaveInLocal, otherPersonDataModel: otherPersonDataModel);
+    dataModelSavedLocal(
+        durationRecordTime: durationRecordTime,
+        dataFileSaveInLocal: dataFileSaveInLocal,
+        otherPersonDataModel: otherPersonDataModel);
     setState(() {
       isListShow = true;
       mySelfController.text = "";
@@ -284,8 +280,10 @@ class _MySelfScreenState extends State<MySelfScreen> {
     getCountOtherMessage(context);
   }
 
-  void dataModelSavedLocal({String dataFileSaveInLocal, String durationRecordTime,
-    DataModelAll otherPersonDataModel}){
+  void dataModelSavedLocal(
+      {String dataFileSaveInLocal,
+      String durationRecordTime,
+      DataModelAll otherPersonDataModel}) {
     otherPersonDataModel.id = DateTime.now().millisecondsSinceEpoch;
     if (durationRecordTime != null &&
         durationRecordTime.toString().length > 0) {
@@ -316,7 +314,6 @@ class _MySelfScreenState extends State<MySelfScreen> {
       });
     }
   }
-
 
   void getCountOtherMessage(BuildContext context) {
     setState(() {
@@ -407,5 +404,4 @@ class _MySelfScreenState extends State<MySelfScreen> {
       _currentStatus = _current.status;
     });
   }
-
 }

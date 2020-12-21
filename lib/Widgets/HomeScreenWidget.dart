@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'UtilsWidgets.dart';
 
 class Home extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -14,13 +13,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   void initState() {
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +45,4 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-
 }
